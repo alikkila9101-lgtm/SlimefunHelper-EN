@@ -40,7 +40,8 @@ public class KeyValueInputWidget<T> extends SubScreenWidget {
 
     public List<Text> getTooltips() {
         if (cachedTooltips == null) {
-            cachedTooltips = ChatUtils.parseTooltipsTranslation(this.keyValueHolder.getKeyName() + ".tooltips", "暂无介绍");
+            cachedTooltips = ChatUtils.parseTooltipsTranslation(
+                    this.keyValueHolder.getKeyName() + ".tooltips", "No description yet");
         }
         return cachedTooltips;
     }

@@ -784,7 +784,7 @@ public class MovTasks {
         boolean collideAtTarget = checkEnvironmentCollision(mc.player, target, false, true);
         if (collideAtTarget) {
             if (command) {
-                Debug.chat("目标位置存在方块碰撞冲突, 无法执行tp");
+                Debug.chat("Block collision conflict at the target position, cannot perform tp");
             }
             return List.of();
         }
@@ -929,11 +929,11 @@ public class MovTasks {
                 horizontalY = currentY;
             }
         } else {
-            if (command) Debug.chat("水平差距过大,当前tp模式无法完成");
+            if (command) Debug.chat("Horizontal gap too large, the current tp mode cannot complete it");
             return List.of();
         }
         if (Math.abs(horizontalY - currentY) > maxYDelta || Math.abs(horizontalY - targetY) > maxYDelta) {
-            if (command) Debug.chat("y 差距过大,当前tp模式无法完成");
+            if (command) Debug.chat("y gap too large, the current tp mode cannot complete it");
             return List.of();
         }
         Vec3d vec3d1 = current;
@@ -952,7 +952,7 @@ public class MovTasks {
             boolean fastMode,
             boolean considerNoFall) {
         if (mc.player == null) return;
-        if (command) Debug.chat("正在向", ChatUtils.getDisplayedLocationDouble(target), "执行tp行为");
+        if (command) Debug.chat("Performing tp toward", ChatUtils.getDisplayedLocationDouble(target), "now");
         Vec3d current = context.from.getValue();
         // simulate direct move
         Vec3d movement0 = target.subtract(current);
@@ -972,7 +972,7 @@ public class MovTasks {
             }
         } else if (vc3d0.size() == 4) {
             if (command) {
-                Debug.chat("执行TP序列");
+                Debug.chat("Executing TP sequence");
             }
             Vec3d vec3d1 = vc3d0.get(0);
             Vec3d vec3d2 = vc3d0.get(1);
@@ -1040,7 +1040,9 @@ public class MovTasks {
             return;
         }
 
-        if (command) Debug.chat("tp行为已经执行, 若出现回弹或者位置不变,则目标位置不可达");
+        if (command)
+            Debug.chat(
+                    "The tp action has been executed; if you get set back or your position does not change, the target position is unreachable");
 
         //        if(currentY > world.getBottomY() + 64){
         //            //most likely
@@ -2438,8 +2440,8 @@ public class MovTasks {
                             eventResolver.resolve = Optional.ofNullable(
                                     resolver.resolvePosition(reader, event.player.getExecutor(), eventResolver.errMsg));
                         } else {
-                            eventResolver.errMsg.accept(
-                                    Text.literal("不存在这样的特殊位置: " + type).formatted(Formatting.RED));
+                            eventResolver.errMsg.accept(Text.literal("No such special position: " + type)
+                                    .formatted(Formatting.RED));
                             eventResolver.resolve = Optional.empty();
                         }
                     }
@@ -2518,48 +2520,50 @@ public class MovTasks {
                     .findFirst()
                     .orElse(null);
             if (player == null) {
-                errMsg.accept(Text.literal("附近没有其他玩家!").formatted(Formatting.RED));
+                errMsg.accept(Text.literal("No other players nearby!").formatted(Formatting.RED));
                 return null;
             } else {
-                errMsg.accept(Text.literal("找到附近的玩家: " + player.getName()).formatted(Formatting.GREEN));
+                errMsg.accept(
+                        Text.literal("Found nearby player: " + player.getName()).formatted(Formatting.GREEN));
             }
             return player.getPos();
         });
         specialPositionRegistry.put("mark", (re, var1, errMsg) -> {
             if (MovTasks.MARK != null) {
                 Vec3d pos = Vec3d.ZERO.add(MovTasks.MARK);
-                errMsg.accept(Text.literal("使用记录坐标： ").append(ChatUtils.getDisplayedLocationDouble(pos)));
+                errMsg.accept(
+                        Text.literal("Using recorded coordinates: ").append(ChatUtils.getDisplayedLocationDouble(pos)));
                 return pos;
             } else {
-                errMsg.accept(Text.literal("暂未记录坐标!"));
+                errMsg.accept(Text.literal("No recorded coordinates yet!"));
                 return null;
             }
         });
         specialPositionRegistry.put("back", (re, var1, errMsg) -> {
             if (MovTasks.LAST_TP_FROM != null) {
-                errMsg.accept(
-                        Text.literal("使用上一个位置: ").append(ChatUtils.getDisplayedLocationDouble(MovTasks.LAST_TP_FROM)));
+                errMsg.accept(Text.literal("Using the last position: ")
+                        .append(ChatUtils.getDisplayedLocationDouble(MovTasks.LAST_TP_FROM)));
                 return MovTasks.LAST_TP_FROM;
             }
-            errMsg.accept(Text.literal("找不到上一个位置"));
+            errMsg.accept(Text.literal("Cannot find the last position"));
             return null;
         });
         specialPositionRegistry.put("desync", (re, var1, errMsg) -> {
             if (MovTasks.setBackLog.lastDesyncPos != null) {
-                errMsg.accept(Text.literal("使用上次客户端同步之前的位置")
+                errMsg.accept(Text.literal("Using the position from before the last client sync")
                         .append(ChatUtils.getDisplayedLocationDouble(MovTasks.setBackLog.lastDesyncPos)));
                 return MovTasks.setBackLog.lastDesyncPos;
             }
-            errMsg.accept(Text.literal("找不到上一次的客户端同步记录"));
+            errMsg.accept(Text.literal("Cannot find the last client sync record"));
             return null;
         });
         specialPositionRegistry.put("lasttp", (re, var1, errMsg) -> {
             if (MovTasks.LAST_TP_REQUEST != null) {
-                errMsg.accept(Text.literal("使用上一个TP请求: ")
+                errMsg.accept(Text.literal("Using the last TP request: ")
                         .append(ChatUtils.getDisplayedLocationDouble(MovTasks.LAST_TP_REQUEST)));
                 return MovTasks.LAST_TP_REQUEST;
             }
-            errMsg.accept(Text.literal("找不到上一个TP请求"));
+            errMsg.accept(Text.literal("Cannot find the last TP request"));
             return null;
         });
         specialPositionRegistry.put("death", (re, var1, errMsg) -> {
@@ -2568,10 +2572,10 @@ public class MovTasks {
                 if (Objects.equals(b0.get().dimension(), mc.world.getRegistryKey())) {
                     return b0.get().pos().toBottomCenterPos();
                 } else {
-                    errMsg.accept(Text.literal("上次死亡位置不在该世界"));
+                    errMsg.accept(Text.literal("The last death position is not in this world"));
                 }
             } else {
-                errMsg.accept(Text.literal("暂未死亡历史记录"));
+                errMsg.accept(Text.literal("No death history yet"));
             }
             return null;
         });
@@ -2588,7 +2592,7 @@ public class MovTasks {
                 SpecialPositionResolver resolver = specialPositionRegistry.get(val);
                 return resolver.resolvePosition(reader, var1, errMsg);
             } else {
-                errMsg.accept(Text.literal("不存在这样的特殊位置: " + type).formatted(Formatting.RED));
+                errMsg.accept(Text.literal("No such special position: " + type).formatted(Formatting.RED));
             }
         }
         return null;

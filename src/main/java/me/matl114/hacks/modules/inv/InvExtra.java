@@ -396,7 +396,7 @@ public class InvExtra extends BaseModule {
         if (player != null) {
             ClientPlayerAccess access = ClientPlayerAccess.of(player);
             access.clearKeepedInventory(true);
-            Debug.chat(Text.literal("已清除界面历史记录"));
+            Debug.chat(Text.literal("Cleared screen history"));
         }
     }
 }

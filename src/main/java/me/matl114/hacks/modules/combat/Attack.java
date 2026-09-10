@@ -825,7 +825,9 @@ public class Attack extends BaseModule {
                 maceAttack = true;
                 int maceThreshold = (useExactAttack ? 100 : 140);
                 if (maceHeight.get().getValue() > maceThreshold) {
-                    Debug.chat(Text.literal("[Attack Bot] 当前参数中,不建议将MaceHack范围设置在%d以上!".formatted(maceThreshold)));
+                    Debug.chat(Text.literal(
+                            "[Attack Bot] With the current parameters, setting the MaceHack range above %d is not recommended!"
+                                    .formatted(maceThreshold)));
                 }
             }
         }
@@ -964,7 +966,8 @@ public class Attack extends BaseModule {
             Vec3d playerPos = movementStack.peekLast().vec3d();
             // do not mace attack into water, water will reset fall distance
             if (mc.world.getBlockState(BlockPos.ofFloored(playerPos)).getBlock() == Blocks.WATER) {
-                Debug.chat(Text.literal("[Attack Bot] 目标攻击位置位于水中,无法执行MaceAttack!"));
+                Debug.chat(Text.literal(
+                        "[Attack Bot] The target attack position is in water, cannot execute MaceAttack!"));
                 return false;
             }
             double deltaY = target.getY() - playerPos.y;
@@ -1066,7 +1069,8 @@ public class Attack extends BaseModule {
                     shouldMoveBackStack.addFirst(MovTasks.MovInfo.create(tpSequenceBack.get(i)));
                 }
                 //                if(maceHack.get() > 80){
-                //                    Debug.chat(Text.literal("[Attack Bot] 在精确攻击模式下,不建议将MaceHack设置在80以上!"));
+                //                    Debug.chat(Text.literal("[Attack Bot] In precise attack mode, setting MaceHack
+                // above 80 is not recommended!"));
                 //                }
 
                 // shouldMoveBackStack.addFirst(MovTasks.MovInfo.create(tpSequenceBack.get(0).add(0, 9E-8,0)));
@@ -1115,7 +1119,8 @@ public class Attack extends BaseModule {
                     shouldMoveBackStack.addFirst(MovTasks.MovInfo.createNotOnGround(vec));
                 }
                 //                if(tpAttackRange.get() >= 135){
-                //                    Debug.chat(Text.literal("[Attack Bot] 不建议将tpAttack范围设置在135以上!"));
+                //                    Debug.chat(Text.literal("[Attack Bot] Setting the tpAttack range above 135 is not
+                // recommended!"));
                 //                }
                 return true;
             }

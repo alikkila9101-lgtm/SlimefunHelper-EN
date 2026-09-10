@@ -309,8 +309,10 @@ public class ClickGui extends BaseModule {
                 baseModule.getName());
     }
 
-    private static final List<Text> TOOLTIP_HAS_BIND = List.of(Text.literal("左键切换模块是否启用"), Text.literal("右键打开模块配置界面"));
-    private static final List<Text> TOOLTIPS_NO_BIND = List.of(Text.literal("点击打开模块配置界面"));
+    private static final List<Text> TOOLTIP_HAS_BIND = List.of(
+            Text.literal("Left-click to toggle the module"),
+            Text.literal("Right-click to open the module config screen"));
+    private static final List<Text> TOOLTIPS_NO_BIND = List.of(Text.literal("Click to open the module config screen"));
 
     public List<Text> getModuleButtonTooltips(BaseModule baseModule) {
         List<Text> texts = new ArrayList<>(ChatUtils.parseTooltipsTranslation(
@@ -332,7 +334,7 @@ public class ClickGui extends BaseModule {
         return ChatUtils.parseTooltipsTranslation(
                 "widget.click-gui.module-name." + baseModule.getModuleManager().getName() + "." + baseModule.getName()
                         + ".tooltips",
-                "暂无介绍");
+                "No description yet");
     }
 
     private DrawableWidget createClickableModuleWidget(BaseModule baseModule, ClickGuiMetaData metaData) {
@@ -698,7 +700,8 @@ public class ClickGui extends BaseModule {
                                     element.getTextureHeight() - 4);
                             context.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
                         }))
-                        .withTooltips(TooltipHandler.of(List.of(Text.literal("拖动或鼠标滚轮以修改位置")))));
+                        .withTooltips(TooltipHandler.of(
+                                List.of(Text.literal("Drag or scroll the mouse wheel to change the position")))));
     }
 
     private DrawableWidget createBaseSettings(Screen screen, ClickGuiMetaData meta) {

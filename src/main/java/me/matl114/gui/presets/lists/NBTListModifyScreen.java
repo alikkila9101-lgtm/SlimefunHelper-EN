@@ -77,7 +77,7 @@ public class NBTListModifyScreen<T> extends ConfirmingBigScreen {
     //        Consumer<List<T>> callback,
     //        int dx,
     //        int dy){
-    //        super(Text.literal("列表编辑界面").formatted(Formatting.GREEN));
+    //        super(Text.literal("List editor screen").formatted(Formatting.GREEN));
     //        validator = listValidator;
     //        this.attrFactory = attrElementFactory;
     //        this.list = list.stream()

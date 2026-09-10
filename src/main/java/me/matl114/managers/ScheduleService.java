@@ -21,7 +21,7 @@ public class ScheduleService {
                     try {
                         task.run();
                     } catch (Exception e) {
-                        Debug.getLogger().warn("重复任务执行异常: {}", taskId);
+                        Debug.getLogger().warn("Repeated task execution exception: {}", taskId);
                         e.printStackTrace();
                         // 发生异常时取消任务，防止无限重试
                     }
@@ -42,7 +42,7 @@ public class ScheduleService {
                     try {
                         task.run();
                     } catch (Exception e) {
-                        Debug.getLogger().warn("任务执行异常: {}", taskId);
+                        Debug.getLogger().warn("Task execution exception: {}", taskId);
                         e.printStackTrace();
                     } finally {
                         runningTasks.remove(taskId);

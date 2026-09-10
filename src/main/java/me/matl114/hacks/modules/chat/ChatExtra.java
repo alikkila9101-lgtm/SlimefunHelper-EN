@@ -69,7 +69,7 @@ public class ChatExtra extends BaseModule {
             intBuilder(chat.add("command-len-limit")).defaultValue(32760).build();
 
     public final StringRef warnFormat = builder(chat.add("limit-warn-format"), String.class)
-            .defaultValue("&c你的输入内容太长了! %d / %d")
+            .defaultValue("&cYour input is too long! %d / %d")
             .build();
 
     public final FlagRef overrideChatHistoryLength =
@@ -285,7 +285,8 @@ public class ChatExtra extends BaseModule {
             flagBuilder(chat.add("enable-chat-message-format")).build();
 
     public final NBTRef<StringFormat> formatStr = builder(chat.add("chat-message-format-str"), StringFormat.class)
-            .defaultValue(new StringFormat(List.of("message", "random+数字"), "{message}喵 | WurstV91 client | {random6}"))
+            .defaultValue(new StringFormat(
+                    List.of("message", "random+number"), "{message}Meow | WurstV91 client | {random6}"))
             .build();
 
     public final NBTRef<Regex> commandEscapeFormatPattern = builder(chat.add("chat-message-escape-format"), Regex.class)

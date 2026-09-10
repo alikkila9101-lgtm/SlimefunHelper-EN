@@ -70,16 +70,18 @@ public class InteractManager extends BaseModule {
     private static final List<String> USE_TARGET_HEAD_TABS = List.of("look", "pos", "entity");
     private static final List<String> HELP_DISPATCH_TABS = List.of("useitem", "attack", "holduse");
     private static final String USEITEM_HELP =
-            "[hand|item_id] [once|inf|interval] [delay] <look|pos|entity> [pitch yaw|pos参数|@entity] 提交使用物品请求";
-    private static final String ATTACK_HELP = "entity|block 提交攻击请求";
-    private static final String ATTACK_ENTITY_HELP = "[hand|item_id] [once|inf|interval] [delay] <@entity> 提交实体攻击请求";
-    private static final String ATTACK_BLOCK_HELP = "[hand|item_id] [once|inf|interval] [delay] <pos参数> 提交挖掘请求";
+            "[hand|item_id] [once|inf|interval] [delay] <look|pos|entity> [pitch yaw|pos args|@entity] submit a use-item request";
+    private static final String ATTACK_HELP = "entity|block submit an attack request";
+    private static final String ATTACK_ENTITY_HELP =
+            "[hand|item_id] [once|inf|interval] [delay] <@entity> submit an entity attack request";
+    private static final String ATTACK_BLOCK_HELP =
+            "[hand|item_id] [once|inf|interval] [delay] <pos args> submit a mine request";
     private static final String HOLD_USEITEM_HELP =
-            "[hand|item_id] [once|inf|interval] [delay] [release_ticks] 提交持续使用物品请求";
-    private static final String LIST_HELP = "显示当前循环交互请求";
-    private static final String CANCEL_HELP = "<id|all> 取消指定或全部循环交互请求";
-    private static final String CLEAR_HELP = "取消全部循环交互请求";
-    private static final String HELP_HELP = "[useitem|attack|holduse] 显示交互指令帮助";
+            "[hand|item_id] [once|inf|interval] [delay] [release_ticks] submit a hold-use-item request";
+    private static final String LIST_HELP = "Show current looping interaction requests";
+    private static final String CANCEL_HELP = "<id|all> cancel the specified or all looping interaction requests";
+    private static final String CLEAR_HELP = "Cancel all looping interaction requests";
+    private static final String HELP_HELP = "[useitem|attack|holduse] show interaction command help";
 
     public final ModulePath module = makePath(Configs.INTERACT_CONFIG, "interaction-tweaks.interact-manager");
 
@@ -368,7 +370,7 @@ public class InteractManager extends BaseModule {
 
     private boolean checkNoRemainingArgs(ArgumentReader reader, CommandExecution context, String usage) {
         if (reader.hasNext()) {
-            context.sendMessage("&c[Interact] &e参数多余:" + reader.getRemainingArgStr());
+            context.sendMessage("&c[Interact] &eToo many arguments:" + reader.getRemainingArgStr());
             sendUsage(context, usage);
             return false;
         }
@@ -380,14 +382,14 @@ public class InteractManager extends BaseModule {
         var htd = parseHandTaskContext(streamArgs);
         String typed = streamArgs.nextNonnullString();
         if (!USE_TARGET_HEAD_TABS.contains(typed)) {
-            context.sendMessage("&c[Interact] &e不存在的目标类型: " + typed);
+            context.sendMessage("&c[Interact] &eNon-existent target type: " + typed);
             sendUsage(context, USEITEM_HELP);
             return true;
         }
         InputArgument<?> target = streamArgs.next();
         LookSupplier supplier = LookSupplier.of(target);
         if (supplier == null) {
-            context.sendMessage("&c[Interact] &e缺少或无效使用目标");
+            context.sendMessage("&c[Interact] &eMissing or invalid use target");
             sendUsage(context, USEITEM_HELP);
             return true;
         }
@@ -404,7 +406,7 @@ public class InteractManager extends BaseModule {
         InputArgument<EntitySelector> targetArg = streamArgs.next();
         EntitySelector selector = targetArg.result();
         if (selector == null) {
-            context.sendMessage("&c[Interact] &e缺少或无效使用目标");
+            context.sendMessage("&c[Interact] &eMissing or invalid use target");
             sendUsage(context, USEITEM_HELP);
             return true;
         }
@@ -421,7 +423,7 @@ public class InteractManager extends BaseModule {
         InputArgument<ExecutePos> targetArg = streamArgs.next();
         ExecutePos selector = targetArg.result();
         if (selector == null) {
-            context.sendMessage("&c[Interact] &e缺少或无效使用目标");
+            context.sendMessage("&c[Interact] &eMissing or invalid use target");
             sendUsage(context, USEITEM_HELP);
             return true;
         }
@@ -444,10 +446,10 @@ public class InteractManager extends BaseModule {
 
     private boolean onListRequests(CommandExecution context, ArgumentInputStream streamArgs, ArgumentReader reader) {
         if (runningRequests.isEmpty()) {
-            context.sendMessage("&c[Interact] &e当前没有循环请求");
+            context.sendMessage("&c[Interact] &eNo looping requests right now");
             return true;
         }
-        context.sendMessage("&c[Interact] &f当前循环请求:");
+        context.sendMessage("&c[Interact] &fCurrent looping requests:");
         runningRequests.values().forEach(request -> context.sendMessage("&7- " + request.id()));
         return true;
     }
@@ -457,24 +459,24 @@ public class InteractManager extends BaseModule {
         if ("all".equalsIgnoreCase(rawId)) {
             int size = runningRequests.size();
             clearRunningRequests(context);
-            context.sendMessage("&c[Interact] &f已取消全部 " + size + " 个循环请求");
+            context.sendMessage("&c[Interact] &fCancelled all " + size + " looping requests");
             return true;
         }
         String id = findRequestId(context, rawId);
         if (id == null) return true;
         InteractRequest removed = runningRequests.remove(id);
         if (removed == null) {
-            context.sendMessage("&c[Interact] &e找不到请求: " + rawId);
+            context.sendMessage("&c[Interact] &eCannot find request: " + rawId);
             return true;
         }
-        context.sendMessage("&c[Interact] &f已取消请求 " + removed.id());
+        context.sendMessage("&c[Interact] &fCancelled request " + removed.id());
         return true;
     }
 
     private boolean onClearRequests(CommandExecution context, ArgumentInputStream streamArgs, ArgumentReader reader) {
         int size = runningRequests.size();
         clearRunningRequests(context);
-        context.sendMessage("&c[Interact] &f已清空 " + size + " 个循环请求");
+        context.sendMessage("&c[Interact] &fCleared " + size + " looping requests");
         return true;
     }
 
@@ -487,7 +489,7 @@ public class InteractManager extends BaseModule {
             case "attack" -> sendAttackHelp(context);
             case "holduse" -> sendHoldUseHelp(context);
             default -> {
-                context.sendMessage("&c[Interact] &e不存在的帮助: " + dispatch);
+                context.sendMessage("&c[Interact] &eNon-existent help: " + dispatch);
                 sendUsage(context, HELP_HELP);
             }
         }
@@ -496,109 +498,124 @@ public class InteractManager extends BaseModule {
 
     private void sendUseItemHelp(CommandExecution context) {
         context.sendMessage(
-                "&c[Interact] &fuseitem 用法: !!useitem [hand|item_id] [once|inf|interval] [delay] <look|pos|entity> [pitch yaw|pos参数|@entity]");
-        context.sendMessage("&c[Interact] &fhand 可填 mainhand / offhand，也可直接填物品 id");
-        context.sendMessage("&c[Interact] &finterval 可填 once(执行一次)、inf(一直执行)，或具体循环次数");
-        context.sendMessage("&c[Interact] &fdelay 填非负整数,代表执行的间隔.若为0,则一次性执行至多9次");
-        context.sendMessage("&c[Interact] &ftarget 可填 look(转头视角)、pos(看向的位置)、entity(目标实体)");
-        context.sendMessage("&c[Interact] &f使用示例&e(可以点击直接拷贝):");
+                "&c[Interact] &fuseitem usage: !!useitem [hand|item_id] [once|inf|interval] [delay] <look|pos|entity> [pitch yaw|pos args|@entity]");
+        context.sendMessage("&c[Interact] &fhand accepts mainhand / offhand, or an item id directly");
+        context.sendMessage(
+                "&c[Interact] &finterval accepts once (execute once), inf (keep executing), or a specific loop count");
+        context.sendMessage(
+                "&c[Interact] &fdelay is a non-negative integer for the execution interval; if 0, executes up to 9 times at once");
+        context.sendMessage(
+                "&c[Interact] &ftarget accepts look (aim the view), pos (the position being looked at), entity (the target entity)");
+        context.sendMessage("&c[Interact] &fUsage examples&e(click to copy directly):");
         context.sendMessage(ChatUtils.builder()
-                .withColorString("1. 向上90度使用二级神龟喷溅药水: &e" + MainCommand.getMainCommandPrefix()
-                        + "useitem splash_potion[strong_turtle_master] look -90 ~")
+                .withColorString("1. Use a level II splash Turtle Master potion aiming 90 degrees up: &e"
+                        + MainCommand.getMainCommandPrefix() + "useitem splash_potion[strong_turtle_master] look -90 ~")
                 .withGlobal(Style.EMPTY.withClickEvent(ChatUtils.getClickCopyText(
                         MainCommand.getMainCommandPrefix() + "useitem splash_potion[strong_turtle_master] look -90 ~")))
                 .end()
                 .build());
         context.sendMessage(ChatUtils.builder()
-                .withColorString("2. 向上90度使用延时神龟喷溅药水: &e" + MainCommand.getMainCommandPrefix()
-                        + "useitem splash_potion[long_turtle_master] look -90 ~")
+                .withColorString("2. Use an extended-duration splash Turtle Master potion aiming 90 degrees up: &e"
+                        + MainCommand.getMainCommandPrefix() + "useitem splash_potion[long_turtle_master] look -90 ~")
                 .withGlobal(Style.EMPTY.withClickEvent(ChatUtils.getClickCopyText(
                         MainCommand.getMainCommandPrefix() + "useitem splash_potion[long_turtle_master] look -90 ~")))
                 .end()
                 .build());
         context.sendMessage(ChatUtils.builder()
-                .withColorString("3. 向下90度使用9个经验瓶,一次使用行完: &e" + MainCommand.getMainCommandPrefix()
-                        + "useitem experience_bottle 9 0 look 90 ~")
+                .withColorString("3. Use 9 experience bottles aiming 90 degrees down, all at once: &e"
+                        + MainCommand.getMainCommandPrefix() + "useitem experience_bottle 9 0 look 90 ~")
                 .withGlobal(Style.EMPTY.withClickEvent(ChatUtils.getClickCopyText(
                         MainCommand.getMainCommandPrefix() + "useitem experience_bottle 9 0 look 90 ~")))
                 .end()
                 .build());
         context.sendMessage(ChatUtils.builder()
-                .withColorString("4. 向下90度使用9个经验瓶,一gt使用一次: &e" + MainCommand.getMainCommandPrefix()
-                        + "useitem experience_bottle 9 1 look 90 ~")
+                .withColorString("4. Use 9 experience bottles aiming 90 degrees down, once per gt: &e"
+                        + MainCommand.getMainCommandPrefix() + "useitem experience_bottle 9 1 look 90 ~")
                 .withGlobal(Style.EMPTY.withClickEvent(ChatUtils.getClickCopyText(
                         MainCommand.getMainCommandPrefix() + "useitem experience_bottle 9 1 look 90 ~")))
                 .end()
                 .build());
-        context.sendMessage("&c[Interact] &f指令建议配合BindCmd模块一起使用,通过快捷键自动发送");
+        context.sendMessage(
+                "&c[Interact] &fThis command is best used together with the BindCmd module and sent automatically via hotkeys");
     }
 
     private void sendAttackHelp(CommandExecution context) {
-        context.sendMessage("&c[Interact] &fattack 用法分两支: entity / block");
+        context.sendMessage("&c[Interact] &fattack usage has two branches: entity / block");
         context.sendMessage(
                 "&c[Interact] &fentity: !!attack entity [hand|item_id] [once|inf|interval] [delay] <@entity>");
-        context.sendMessage("&c[Interact] &fblock: !!attack block [hand|item_id] [once|inf|interval] [delay] <pos参数>");
-        context.sendMessage("&c[Interact] &fhand 可填 mainhand / offhand，也可直接填物品 id");
-        context.sendMessage("&c[Interact] &finterval 可填 once(执行一次)、inf(一直执行)，或具体循环次数");
-        context.sendMessage("&c[Interact] &fdelay 填非负整数,代表执行的间隔.若为0,则一次性执行至多9次");
-        context.sendMessage("&c[Interact] &f使用示例&e(可以点击直接拷贝):");
+        context.sendMessage(
+                "&c[Interact] &fblock: !!attack block [hand|item_id] [once|inf|interval] [delay] <pos args>");
+        context.sendMessage("&c[Interact] &fhand accepts mainhand / offhand, or an item id directly");
+        context.sendMessage(
+                "&c[Interact] &finterval accepts once (execute once), inf (keep executing), or a specific loop count");
+        context.sendMessage(
+                "&c[Interact] &fdelay is a non-negative integer for the execution interval; if 0, executes up to 9 times at once");
+        context.sendMessage("&c[Interact] &fUsage examples&e(click to copy directly):");
         context.sendMessage(ChatUtils.builder()
-                .withColorString("1. 攻击距离玩家超过0.01的最近实体一次: &e" + MainCommand.getMainCommandPrefix()
+                .withColorString("1. Attack the nearest entity more than 0.01 away from the player, once: &e"
+                        + MainCommand.getMainCommandPrefix()
                         + "attack entity mainhand once 1 @e[distance=0.1..,limit=1,sort=nearest]")
                 .withGlobal(Style.EMPTY.withClickEvent(ChatUtils.getClickCopyText(MainCommand.getMainCommandPrefix()
                         + "attack entity mainhand once 1 @e[distance=0.1..,limit=1,sort=nearest]")))
                 .end()
                 .build());
         context.sendMessage(ChatUtils.builder()
-                .withColorString("2. 攻击距离玩家超过0.01的最近实体16次,间隔10gt: &e" + MainCommand.getMainCommandPrefix()
-                        + "attack entity mainhand 16 10 @e[distance=1..,limit=1,sort=nearest]")
+                .withColorString(
+                        "2. Attack the nearest entity more than 0.01 away from the player 16 times, 10gt apart: &e"
+                                + MainCommand.getMainCommandPrefix()
+                                + "attack entity mainhand 16 10 @e[distance=1..,limit=1,sort=nearest]")
                 .withGlobal(Style.EMPTY.withClickEvent(ChatUtils.getClickCopyText(MainCommand.getMainCommandPrefix()
                         + "attack entity mainhand 16 10 @e[distance=1..,limit=1,sort=nearest]")))
                 .end()
                 .build());
         context.sendMessage(ChatUtils.builder()
-                .withColorString(
-                        "3. 攻击脚下方块30次,1gt攻击一次: &e" + MainCommand.getMainCommandPrefix() + "attack block 30 1 ~ ~-1 ~")
+                .withColorString("3. Attack the block underfoot 30 times, once per 1gt: &e"
+                        + MainCommand.getMainCommandPrefix() + "attack block 30 1 ~ ~-1 ~")
                 .withGlobal(Style.EMPTY.withClickEvent(
                         ChatUtils.getClickCopyText(MainCommand.getMainCommandPrefix() + "attack block 30 1 ~ ~-1 ~")))
                 .end()
                 .build());
         context.sendMessage(ChatUtils.builder()
-                .withColorString("2. 攻击脚下方块2次,100gt攻击一次(?): &e" + MainCommand.getMainCommandPrefix()
-                        + "attack block 2 200 ~ ~-1 ~")
+                .withColorString("2. Attack the block underfoot 2 times, once per 100gt(?): &e"
+                        + MainCommand.getMainCommandPrefix() + "attack block 2 200 ~ ~-1 ~")
                 .withGlobal(Style.EMPTY.withClickEvent(
                         ChatUtils.getClickCopyText(MainCommand.getMainCommandPrefix() + "attack block 2 200 ~ ~-1 ~")))
                 .end()
                 .build());
-        context.sendMessage("&c[Interact] &f指令建议配合BindCmd模块一起使用,通过快捷键自动发送");
+        context.sendMessage(
+                "&c[Interact] &fThis command is best used together with the BindCmd module and sent automatically via hotkeys");
     }
 
     private void sendHoldUseHelp(CommandExecution context) {
         context.sendMessage(
-                "&c[Interact] &fholduseitem 用法: !!holduseitem [hand|item_id] [once|inf|interval] [delay] [release_ticks]");
-        context.sendMessage("&c[Interact] &fhand 可填 mainhand / offhand，也可直接填物品 id");
-        context.sendMessage("&c[Interact] &finterval 可填 once(执行一次)、inf(一直执行)，或具体循环次数");
-        context.sendMessage("&c[Interact] &fdelay 填非负整数,代表执行的间隔.若为0,则一次性执行至多9次");
-        context.sendMessage("&c[Interact] &frelease_ticks 表示按住使用后多少 tick 松开，默认 20");
-        context.sendMessage("&c[Interact] &f注:该模式中,使用物品将直接把物品长时间换到主手或副手,直到使用完毕");
-        context.sendMessage("&c[Interact] &f使用示例&e(可以点击直接拷贝):");
+                "&c[Interact] &fholduseitem usage: !!holduseitem [hand|item_id] [once|inf|interval] [delay] [release_ticks]");
+        context.sendMessage("&c[Interact] &fhand accepts mainhand / offhand, or an item id directly");
+        context.sendMessage(
+                "&c[Interact] &finterval accepts once (execute once), inf (keep executing), or a specific loop count");
+        context.sendMessage(
+                "&c[Interact] &fdelay is a non-negative integer for the execution interval; if 0, executes up to 9 times at once");
+        context.sendMessage(
+                "&c[Interact] &frelease_ticks is how many ticks to keep use held before releasing, default 20");
+        context.sendMessage(
+                "&c[Interact] &fNote: in this mode, using an item keeps it in the main hand or off hand for a long time until usage completes");
+        context.sendMessage("&c[Interact] &fUsage examples&e(click to copy directly):");
         context.sendMessage(ChatUtils.builder()
-                .withColorString("1. 使用下界合金矛3次,一次30gt,40gt使用一次: &e" + MainCommand.getMainCommandPrefix()
-                        + "holduseitem netherite_spear 3 40 30")
+                .withColorString("1. Use the Netherite Spear 3 times, 30gt each, once per 40gt: &e"
+                        + MainCommand.getMainCommandPrefix() + "holduseitem netherite_spear 3 40 30")
                 .withGlobal(Style.EMPTY.withClickEvent(ChatUtils.getClickCopyText(
                         MainCommand.getMainCommandPrefix() + "holduseitem netherite_spear 3 40 30")))
                 .end()
                 .build());
         context.sendMessage(ChatUtils.builder()
-                .withColorString("2. 使用下界合金矛3次,一次3gt,40gt使用一次: &e" + MainCommand.getMainCommandPrefix()
-                        + "holduseitem netherite_spear 3 40 3")
+                .withColorString("2. Use the Netherite Spear 3 times, 3gt each, once per 40gt: &e"
+                        + MainCommand.getMainCommandPrefix() + "holduseitem netherite_spear 3 40 3")
                 .withGlobal(Style.EMPTY.withClickEvent(ChatUtils.getClickCopyText(
                         MainCommand.getMainCommandPrefix() + "holduseitem netherite_spear 3 40 32")))
                 .end()
                 .build());
         context.sendMessage(ChatUtils.builder()
-                .withColorString("3. 喝延时神龟药水3次,40gt喝一次: &e" + MainCommand.getMainCommandPrefix()
-                        + "holduseitem potion[long_turtle_master] 3 40 32")
+                .withColorString("3. Drink the extended Turtle Master potion 3 times, once per 40gt: &e"
+                        + MainCommand.getMainCommandPrefix() + "holduseitem potion[long_turtle_master] 3 40 32")
                 .withGlobal(Style.EMPTY.withClickEvent(ChatUtils.getClickCopyText(
                         MainCommand.getMainCommandPrefix() + "holduseitem potion[long_turtle_master] 3 40 32")))
                 .end()
@@ -608,7 +625,7 @@ public class InteractManager extends BaseModule {
     private boolean submitRequest(CommandExecution context, InteractRequest request) {
         runningRequests.put(request.id(), request);
         if (logU.get()) {
-            context.sendMessage("&c[Interact] &f已提交请求 " + request.id());
+            context.sendMessage("&c[Interact] &fRequest submitted " + request.id());
         }
         return true;
     }
@@ -620,13 +637,13 @@ public class InteractManager extends BaseModule {
         List<String> ids = List.copyOf(runningRequests.keySet());
         runningRequests.clear();
         if (reporter != null) {
-            reporter.sendMessage("&c[Interact] &f已清理 " + ids.size() + " 个循环请求");
+            reporter.sendMessage("&c[Interact] &fCleared " + ids.size() + " looping requests");
         }
     }
 
     private boolean canSubmit(CommandExecution context) {
         if (mc.player == null || mc.world == null) {
-            context.sendMessage("&c[Interact] 当前没有可用玩家或世界");
+            context.sendMessage("&c[Interact] No player or world available right now");
             return false;
         }
         return true;
@@ -634,7 +651,7 @@ public class InteractManager extends BaseModule {
 
     private void sendUsage(CommandExecution context, String usage) {
         if (usage == null || usage.isBlank()) return;
-        context.sendMessage("&7用法: " + usage);
+        context.sendMessage("&7Usage: " + usage);
     }
 
     private String nextRequestId(String type) {
@@ -654,11 +671,11 @@ public class InteractManager extends BaseModule {
                 .filter(id -> id.startsWith(raw))
                 .toList();
         if (matches.isEmpty()) {
-            context.sendMessage("&c[Interact] 找不到请求: " + raw);
+            context.sendMessage("&c[Interact] Cannot find request: " + raw);
             return null;
         }
         if (matches.size() > 1) {
-            context.sendMessage("&c[Interact] 请求 ID 前缀不唯一: " + raw);
+            context.sendMessage("&c[Interact] Request ID prefix is not unique: " + raw);
             return null;
         }
         return matches.get(0);

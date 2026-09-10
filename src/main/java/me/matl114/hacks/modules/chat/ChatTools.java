@@ -125,20 +125,30 @@ public class ChatTools extends BaseModule {
 
     private static final Identifier LOCK_ENABLE_SPRITE = Identifier.tryParse("slimefunhelper:gui/lock_enable");
     private static final Identifier LOCK_DISABLE_SPRITE = Identifier.tryParse("slimefunhelper:gui/lock_disable");
-    private static final List<Text> TOOLTIPS_CHAT_TOOLS = List.of(Text.literal("点击展开/关闭聊天框小工具栏"));
-    private static final List<Text> TOOLTIPS_SEND_CACHE = List.of(Text.literal("发送缓存聊天框中的东西"));
-    private static final List<Text> TOOLTIPS_AUTO_SEND =
-            List.of(Text.literal("自动发送缓存聊天框中的东西"), Text.literal("查看配置界面以调整参数"));
-    private static final List<Text> TOOLTIPS_KEEP_INV =
-            List.of(Text.literal("切换是否keepChatInv"), Text.literal("若启用,回车发送文字后将仍保持在聊天界面"));
-    private static final List<Text> TOOLTIPS_SEL_TO_UNICODE =
-            List.of(Text.literal("点击将当前正在输入的输入框中"), Text.literal("输入的字符转为unicode字符"));
-    private static final List<Text> TOOLTIPS_INT_TO_CHAR = List.of(Text.literal("可以将旁边的小输入框中的数字和字符进行ascii转换"));
-    private static final List<Text> TOOLTIPS_ENCRYPT =
-            List.of(Text.literal("左击切换是否进行消息加密"), Text.literal("右击以打开配置文件"), Text.literal("按住ctrl发送可以禁用加密"));
-    private static final List<Text> TOOLTIPS_FORMAT = List.of(Text.literal("左击切换是否进行聊天格式化"), Text.literal("右击以打开配置文件"));
-    private static final List<Text> TOOLTIPS_SPECIAL_CHARS =
-            List.of(Text.literal("点击展开/关闭特殊字符快捷键"), Text.literal("可以在配置界面中配置特殊字符列表"));
+    private static final List<Text> TOOLTIPS_CHAT_TOOLS =
+            List.of(Text.literal("Click to expand/collapse the chat toolbar"));
+    private static final List<Text> TOOLTIPS_SEND_CACHE =
+            List.of(Text.literal("Send what is saved in the chat input box"));
+    private static final List<Text> TOOLTIPS_AUTO_SEND = List.of(
+            Text.literal("Automatically send what is saved in the chat input box"),
+            Text.literal("Open the config screen to adjust the parameters"));
+    private static final List<Text> TOOLTIPS_KEEP_INV = List.of(
+            Text.literal("Toggle keepChatInv"),
+            Text.literal("If enabled, pressing Enter to send text keeps you in the chat screen"));
+    private static final List<Text> TOOLTIPS_SEL_TO_UNICODE = List.of(
+            Text.literal("Click to apply to what you are currently typing in the chat box"),
+            Text.literal("Converts entered characters to unicode characters"));
+    private static final List<Text> TOOLTIPS_INT_TO_CHAR =
+            List.of(Text.literal("Converts the numbers and characters in the small input box beside it to ascii"));
+    private static final List<Text> TOOLTIPS_ENCRYPT = List.of(
+            Text.literal("Left-click to toggle message encryption"),
+            Text.literal("Right-click to open the config file"),
+            Text.literal("Hold ctrl while sending to disable encryption"));
+    private static final List<Text> TOOLTIPS_FORMAT = List.of(
+            Text.literal("Left-click to toggle chat formatting"), Text.literal("Right-click to open the config file"));
+    private static final List<Text> TOOLTIPS_SPECIAL_CHARS = List.of(
+            Text.literal("Click to expand/collapse special character hotkeys"),
+            Text.literal("The special character list can be configured in the config screen"));
 
     public void sendCachedMessage() {
         String val = chatCache.get();

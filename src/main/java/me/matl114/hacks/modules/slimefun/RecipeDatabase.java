@@ -83,12 +83,12 @@ public class RecipeDatabase extends BaseModule {
             flagBuilder(recipeRecord.add("lock-current-data")).build();
 
     public final StringRef multiBlockRecipeType = builder(recipeRecord.add("multiblock-pattern"), StringRef.TYPE)
-            .defaultValue("^(多方块结构|MultiBlock)$")
+            .defaultValue("^(MultiBlock Structure|MultiBlock)$")
             .validator(Configs.REGEX_VALIDATOR)
             .build();
 
     public final NBTRef<Regex> slimefunBookTitle = builder(recipeRecord.add("rp-title"), Regex.class)
-            .defaultValue(new Regex("^(Slimefun 指南.*)$"))
+            .defaultValue(new Regex("^(Slimefun Guide.*)$"))
             .build();
 
     @Override
@@ -149,7 +149,7 @@ public class RecipeDatabase extends BaseModule {
             id2CraftType.putAll(craftTypeMap);
             dirtyCraftType = false;
         } catch (Throwable e) {
-            Debug.info("反序列化RecipeTypes数据失败, 错误:");
+            Debug.info("Failed to deserialize RecipeTypes data, error:");
             Debug.info(e);
         }
         try {
@@ -163,7 +163,7 @@ public class RecipeDatabase extends BaseModule {
             id2Recipe.putAll(craftTypeMap);
             dirtyRecipe = false;
         } catch (Throwable e) {
-            Debug.info("反序列化RecipeEntry数据失败, 错误:");
+            Debug.info("Failed to deserialize RecipeEntry data, error:");
             Debug.info(e);
         }
         resetMultiblockRegistry();
@@ -191,7 +191,7 @@ public class RecipeDatabase extends BaseModule {
                         }
                     });
                 } catch (Throwable e) {
-                    Debug.info("序列化RecipeTypes数据失败, 错误:");
+                    Debug.info("Failed to serialize RecipeTypes data, error:");
                     Debug.info(e);
                 }
             }
@@ -210,7 +210,7 @@ public class RecipeDatabase extends BaseModule {
                         }
                     });
                 } catch (Throwable e) {
-                    Debug.info("序列化RecipeEntry数据失败, 错误:");
+                    Debug.info("Failed to serialize RecipeEntry data, error:");
                     Debug.info(e);
                 }
             }
@@ -365,7 +365,7 @@ public class RecipeDatabase extends BaseModule {
         if (lockIcon.getItem() == Items.BARRIER) {
             List<String> lore = ItemStackUtils.getLoreString(lockIcon);
             for (var str : lore) {
-                if (str.contains("已锁定")) {
+                if (str.contains("Locked")) {
 
                     return true;
                 }

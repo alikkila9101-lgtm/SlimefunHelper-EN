@@ -44,10 +44,10 @@ public class BeaconEnhance extends BaseModule {
             int scx = access.getScreenX();
             int scy = access.getScreenY();
             var buttonLevel1 =
-                    new BeaconEffectSelectButton(scx + 167 - 23, scy + 47 + 26, 22, 22, Text.literal("第一等级: "));
+                    new BeaconEffectSelectButton(scx + 167 - 23, scy + 47 + 26, 22, 22, Text.literal("First level: "));
             access.addDrawableChildTo(buttonLevel1);
             var buttonLevel2 =
-                    new BeaconEffectSelectButton(scx + 167 + 1, scy + 47 + 26, 22, 22, Text.literal("第二等级: "));
+                    new BeaconEffectSelectButton(scx + 167 + 1, scy + 47 + 26, 22, 22, Text.literal("Second level: "));
             access.addDrawableChildTo(buttonLevel2);
             AtomicReference<ButtonWidget> buttonTrigger =
                     new AtomicReference<>(ButtonWidget.builder(Text.literal("Send packet"), (b) -> {
@@ -56,9 +56,10 @@ public class BeaconEnhance extends BaseModule {
                                         .sendPacket(new UpdateBeaconC2SPacket(
                                                 Optional.ofNullable(buttonLevel1.getCurrentEffect()),
                                                 Optional.ofNullable(buttonLevel2.getCurrentEffect())));
-                                Debug.chat(Text.literal("成功发送了信标设置!"));
+                                Debug.chat(Text.literal("Beacon settings sent successfully!"));
                             })
-                            .tooltip(Tooltip.of(Text.literal("点击上方选效果,点此强制修改信标")))
+                            .tooltip(Tooltip.of(
+                                    Text.literal("Select an effect above, then click here to force-modify the beacon")))
                             .dimensions(scx + 167 - 23, scy + 47 + 48, 46, 10)
                             .build());
             access.addDrawableChildTo(buttonTrigger.get());

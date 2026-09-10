@@ -46,25 +46,33 @@ public class SlimefunGuide extends BaseModule {
         RecipeDatabase database = SlimefunTasks.getRecipeDatabase();
         database.enable.set(true);
         database.saveData.set(true);
-        Debug.chat("配方自动记录功能已开启,请使用ctrl+G打开Slimefun settings设置具体参数");
-        Debug.chat(Text.literal("注意: 在1.20.5以上的物品数据和1.20.4及以下不互通,如果你进入了via支持的服务器,请注意这一点!")
+        Debug.chat(
+                "Recipe auto-recording is enabled; use ctrl+G to open Slimefun settings to configure the parameters");
+        Debug.chat(Text.literal(
+                        "Note: item data from 1.20.5 and above is not compatible with 1.20.4 and below; keep this in mind if you join a Via-supported server!")
                 .formatted(Formatting.YELLOW));
     }
 
     private boolean reject = false;
 
     public void handleRejectEnable() {
-        Debug.chat("您仍旧可以继续使用GUIDE功能,在这次启动中该弹窗将不再弹出");
+        Debug.chat("You can still use the GUIDE feature; this popup will not appear again during this launch");
         reject = true;
     }
 
-    private static final Text QUESTION_NOT_ENABLE = Text.literal("您当前并未启用配方记录功能,无法体验完整版GUIDE功能,请问您该如何选择?");
+    private static final Text QUESTION_NOT_ENABLE = Text.literal(
+            "Recipe recording is currently disabled, so the full GUIDE experience is unavailable. How would you like to proceed?");
     private final List<QuestionScreen.Solution> QUESTION_SOLUTIONS = List.of(
-            QuestionScreen.Solution.of(Text.literal("我已知晓该功能,一键启用"), this::handleAutoEnable),
-            QuestionScreen.Solution.of(Text.literal("我已知晓该功能,但不启用"), this::handleRejectEnable),
-            QuestionScreen.Solution.of(Text.literal("我已知晓该功能,一键启用"), this::handleAutoEnable),
-            QuestionScreen.Solution.of(Text.literal("我已知晓该功能,但不启用"), this::handleRejectEnable),
-            QuestionScreen.Solution.of(Text.literal("我已知晓该功能,一键启用"), this::handleAutoEnable));
+            QuestionScreen.Solution.of(
+                    Text.literal("I understand this feature, enable it with one click"), this::handleAutoEnable),
+            QuestionScreen.Solution.of(
+                    Text.literal("I understand this feature, but do not enable it"), this::handleRejectEnable),
+            QuestionScreen.Solution.of(
+                    Text.literal("I understand this feature, enable it with one click"), this::handleAutoEnable),
+            QuestionScreen.Solution.of(
+                    Text.literal("I understand this feature, but do not enable it"), this::handleRejectEnable),
+            QuestionScreen.Solution.of(
+                    Text.literal("I understand this feature, enable it with one click"), this::handleAutoEnable));
 
     public boolean handleNotEnable() {
         // 没有启用recipe或者没有启用
@@ -91,17 +99,19 @@ public class SlimefunGuide extends BaseModule {
                 .toList()));
     }
 
-    private static final Text TITLE_ALL_ITEM = Text.literal("全部记录物品");
+    private static final Text TITLE_ALL_ITEM = Text.literal("All recorded items");
     public static final List<Text> TOOLTIPS_ITEM_RULE = List.of(
-            Text.literal("左键查看当前物品合成表"),
-            Text.literal("右键查看包含当前物品的合成表"),
-            Text.literal("Shift右键的时候会同时显示原版物品配方"),
-            Text.literal("中键的时候会尝试获取物品"));
-    private static final Text TITLE_ALL_TYPE = Text.literal("全部记录配方类型");
-    private static final Text TITLE_ALL_VANILLA = Text.literal("全部原版配方");
-    private static final Text TITLE_ALL_SAVED = Text.literal("全部保存物品");
-    public static final List<Text> TOOLTIPS_SAVED_RULE =
-            List.of(Text.literal("左键获得一组该物品(仅限创造)"), Text.literal("shift左键拷贝/give指令"), Text.literal("右键打开物品编辑器"));
+            Text.literal("Left-click to view recipes for this item"),
+            Text.literal("Right-click to view recipes that use this item"),
+            Text.literal("Shift+right-click also shows the vanilla recipes for the item"),
+            Text.literal("Middle-click attempts to fetch the item"));
+    private static final Text TITLE_ALL_TYPE = Text.literal("All recorded recipe types");
+    private static final Text TITLE_ALL_VANILLA = Text.literal("All vanilla recipes");
+    private static final Text TITLE_ALL_SAVED = Text.literal("All saved items");
+    public static final List<Text> TOOLTIPS_SAVED_RULE = List.of(
+            Text.literal("Left-click to get a stack of this item (creative only)"),
+            Text.literal("Shift+left-click to copy the /give command"),
+            Text.literal("Right-click to open the item editor"));
 
     public void openMainGuideMenu() {
         if (handleNotEnable()) return;
@@ -222,14 +232,17 @@ public class SlimefunGuide extends BaseModule {
 
     public void tryGetItemStack(ItemStack item) {
         if (ScreenUtils.hasShiftDown()) {
-            Debug.chat(Text.literal("拷贝了物品的Give指令到剪切板").formatted(Formatting.YELLOW));
+            Debug.chat(Text.literal("Copied the item's Give command to the clipboard")
+                    .formatted(Formatting.YELLOW));
             InvTasks.copyGiveCommand(item.copy());
         } else {
             if (mc.player != null && mc.interactionManager.getCurrentGameMode().isCreative()) {
                 InvTasks.creativeAddItem(item.copy(), 64);
             } else {
-                Debug.chat(Text.literal("当前并不处于创造模式,无法获取保存物品!").formatted(Formatting.YELLOW));
-                Debug.chat(Text.literal("请使用Shift点击来获取物品的Give指令!").formatted(Formatting.YELLOW));
+                Debug.chat(Text.literal("Not in creative mode, cannot fetch saved items!")
+                        .formatted(Formatting.YELLOW));
+                Debug.chat(Text.literal("Use Shift+click to get the item's Give command!")
+                        .formatted(Formatting.YELLOW));
             }
         }
     }

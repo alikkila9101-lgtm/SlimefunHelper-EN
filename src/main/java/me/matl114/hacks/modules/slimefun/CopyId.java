@@ -56,7 +56,8 @@ public class CopyId extends BaseModule {
 
             if (sfid != null) {
                 client.keyboard.setClipboard(sfid);
-                Debug.chat(Text.literal("成功将Slimefun ID拷贝至你的剪切板和公共参数! 值: ")
+                Debug.chat(Text.literal(
+                                "Successfully copied the Slimefun ID to your clipboard and public parameters! Value: ")
                         .formatted(Formatting.GREEN)
                         .append(Text.literal(sfid).formatted(Formatting.WHITE)));
 
@@ -64,7 +65,7 @@ public class CopyId extends BaseModule {
             } else {
                 String id = Registries.ITEM.getId(heldItem.getItem()).getPath().toUpperCase(Locale.ROOT);
                 client.keyboard.setClipboard(id);
-                Debug.chat(Text.literal("该物品不是Slimefun物品,拷贝原版ID!")
+                Debug.chat(Text.literal("This item is not a Slimefun item, copied the vanilla ID!")
                         .formatted(Formatting.GREEN)
                         .append(Text.literal(id).formatted(Formatting.WHITE)));
                 return true;

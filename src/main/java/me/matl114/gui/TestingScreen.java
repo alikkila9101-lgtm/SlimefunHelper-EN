@@ -127,7 +127,7 @@ public class TestingScreen extends Screen {
         //        addDrawableChild(element7);
         //        element8 = new ExecutableWidget(this.x +4, this.y+4, this.backgroundWidth-8,  16)
         //            .setElementHandler(
-        //                new LabelElement(Text.literal("这是一个基本标题"), Colors.WHITE,  0)
+        //                new LabelElement(Text.literal("This is a basic title"), Colors.WHITE,  0)
         //                    .combineAbsoluteRender(new
         // TooltipHandler(TooltipHandler.TooltipProvider.of(List.of(Text.literal("111"),Text.literal("222")))))
         //            )
@@ -138,16 +138,17 @@ public class TestingScreen extends Screen {
         //            .setExtraDepth(100)
         //            ;
         //        element10 = new ExecutableWidget(this.x + 100, this.y + 175, 16,16)
-        //            .setElementHandler(new ButtonElement(TextProvider.of(Text.literal("这是一个按钮")),((element, widget,
+        //            .setElementHandler(new ButtonElement(TextProvider.of(Text.literal("This is a button")),((element,
+        // widget,
         // mouseButton) -> {
-        //                Debug.info("按钮被按下了");
+        //                Debug.info("The button was pressed");
         //                return true;
         //            })))
         //            .setExtraDepth(100)
         //        ;
         //        element11 = new ExecutableWidget(this.x + 100, this.y + 200, 16, 16)
-        //            .setElementHandler(new PageButtonElement(List.of(Text.of("翻页")), 16, ()-> 8, (i)->{
-        //                Debug.info("我要切换到页",i);
+        //            .setElementHandler(new PageButtonElement(List.of(Text.of("Next page")), 16, ()-> 8, (i)->{
+        //                Debug.info("I want to switch to page",i);
         //            },3))
         //            .setExtraDepth(100)
         //        ;
@@ -159,8 +160,8 @@ public class TestingScreen extends Screen {
         //            .addDrawableChild(new ExecutableWidget(10,2,36,36).setElementHandler(new SlotElement(inventory,
         // 1)))
         //            .addDrawableChild(new ExecutableWidget(60, 2, 18, 18).setElementHandler(new
-        // ButtonElement(TextProvider.of(Text.literal("嘎嘎")), (el, w, m)->{
-        //                Debug.info("桀桀桀");
+        // ButtonElement(TextProvider.of(Text.literal("Quack quack")), (el, w, m)->{
+        //                Debug.info("Heh heh heh");
         //                return true;
         //            })))
         //            .setExtraDepth(100);

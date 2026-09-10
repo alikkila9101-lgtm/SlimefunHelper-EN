@@ -57,13 +57,13 @@ public class ReflectHelper {
 
     public static void logClassInfo(Object what) {
         Class<?> clazz = what instanceof Class<?> ? (Class<?>) what : what.getClass();
-        Debug.chat(Text.literal("=== " + clazz.getSimpleName() + "的信息 ===").formatted(Formatting.YELLOW));
+        Debug.chat(Text.literal("=== " + clazz.getSimpleName() + " info ===").formatted(Formatting.YELLOW));
         String type;
-        Debug.chat(Text.literal("类型: " + Modifier.toString(clazz.getModifiers())));
-        Debug.chat(Text.literal("父类: " + clazz.getSuperclass()));
-        Debug.chat(Text.literal("接口: " + Arrays.asList(clazz.getInterfaces())));
-        Debug.chat(
-                Text.literal("=== " + getClassNameForLog(clazz) + " 的构造器信息 ===").formatted(Formatting.GREEN));
+        Debug.chat(Text.literal("Type: " + Modifier.toString(clazz.getModifiers())));
+        Debug.chat(Text.literal("Superclass: " + clazz.getSuperclass()));
+        Debug.chat(Text.literal("Interfaces: " + Arrays.asList(clazz.getInterfaces())));
+        Debug.chat(Text.literal("=== " + getClassNameForLog(clazz) + " constructor info ===")
+                .formatted(Formatting.GREEN));
 
         for (var con : clazz.getDeclaredConstructors()) {
             String str = getMethodInfo(con);
@@ -146,8 +146,8 @@ public class ReflectHelper {
 
     public static void logMethodsInfo(Object what) {
         Class<?> clazz = what instanceof Class<?> ? (Class<?>) what : what.getClass();
-        Debug.chat(
-                Text.literal("=== " + getClassNameForLog(clazz) + " 的方法信息 ===").formatted(Formatting.GREEN));
+        Debug.chat(Text.literal("=== " + getClassNameForLog(clazz) + " method info ===")
+                .formatted(Formatting.GREEN));
         for (var method : clazz.getMethods()) {
             String str = getMethodInfo(method);
             Debug.chat(str);
@@ -165,7 +165,7 @@ public class ReflectHelper {
 
     public static void logPrivateMethodsInfo(Object what) {
         Class<?> clazz = what instanceof Class<?> ? (Class<?>) what : what.getClass();
-        Debug.chat(Text.literal("=== " + getClassNameForLog(clazz) + " 的私有方法信息 ===")
+        Debug.chat(Text.literal("=== " + getClassNameForLog(clazz) + " private method info ===")
                 .formatted(Formatting.GREEN));
         for (var method : clazz.getDeclaredMethods()) {
             if (!Modifier.isPublic(method.getModifiers())) {

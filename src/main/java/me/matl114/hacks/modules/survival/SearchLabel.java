@@ -273,7 +273,7 @@ public class SearchLabel extends BaseModule {
                 addTo(createWaypoint(pos, record, factory), currentAccess);
             }
             if (notify.get()) {
-                EventNotify.INSTANCE.notify("[SlimefunHelper]自动标点", createLabel(record));
+                EventNotify.INSTANCE.notify("[SlimefunHelper]Auto waypoint", createLabel(record));
             }
             if (log.get()) {
                 logI18N("message.module.search-label.label-update", createLabel(record));

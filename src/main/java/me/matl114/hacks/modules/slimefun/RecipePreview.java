@@ -47,7 +47,7 @@ public class RecipePreview {
     //    }
     //    private static record RenderRecipeRecordNoCache(Slot slot) implements RenderRecipeRecord{
     //
-    //        static final Text data = Text.literal( "暂无缓存数据").formatted(Formatting.BOLD);
+    //        static final Text data = Text.literal( "No cached data yet").formatted(Formatting.BOLD);
     //        @Override
     //        public void disableRender(HandledScreen<?> screen) {
     //

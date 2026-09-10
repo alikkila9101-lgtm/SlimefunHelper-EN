@@ -113,7 +113,7 @@ public class SleepMode extends BaseModule {
                                     if (val > 0) {
                                         return Stream.of("confirm");
                                     } else {
-                                        return Stream.of("第一个参数请输入正整数");
+                                        return Stream.of("Enter a positive integer as the first argument");
                                     }
                                 })
                                 .defaultValue("")
@@ -126,7 +126,7 @@ public class SleepMode extends BaseModule {
     public void onSleep(ArgumentInputStream re) {
         int level = re.nextClampedInt(1, 3);
         if (level != 1 && level != 2) {
-            Debug.chat("请输入范围内的数字: 1~2");
+            Debug.chat("Enter a number within the range: 1~2");
             return;
         }
         String val = re.nextNonnull();
@@ -137,8 +137,8 @@ public class SleepMode extends BaseModule {
             }
             Tasks.scheduleDelayed(() -> RenderTasks.getSleepMode().setCustomScreenSleeping(level, val2), 1);
         } else {
-            Debug.chat("使用sleep confirm 确认进入睡眠模式, 进入睡眠模式后可以按 "
-                    + RenderTasks.getSleepMode().getWakeupButton() + " 键离开");
+            Debug.chat("Use sleep confirm to confirm entering sleep mode; once in sleep mode you can press "
+                    + RenderTasks.getSleepMode().getWakeupButton() + " to leave");
         }
     }
 
@@ -156,7 +156,8 @@ public class SleepMode extends BaseModule {
 
     public boolean wakeUpScreen() {
         if (setScreenSleeping(0)) {
-            if (mc.player != null) Debug.chat(Text.literal("睡眠状态结束, 欢迎回来!").formatted(Formatting.GREEN));
+            if (mc.player != null)
+                Debug.chat(Text.literal("Sleep ended, welcome back!").formatted(Formatting.GREEN));
             return true;
         } else return false;
     }
@@ -293,14 +294,17 @@ public class SleepMode extends BaseModule {
             super.init();
             sleepingScreenInstance = this;
             DisplayWidget.instance(40, 20, this.width - 80, this.height / 3 - 40)
-                    .setRenderHandler(LabelElement.instance(Text.literal("您的游戏在待机中退出,目前已停止刷新")))
+                    .setRenderHandler(
+                            LabelElement.instance(Text.literal("Your game exited while idle, refreshing has stopped")))
                     .addTo(this);
             DisplayWidget.instance(40, this.height / 3 + 20, this.width - 80, this.height / 3 - 40)
-                    .setRenderHandler(LabelElement.instance(Text.literal("按 " + getWakeupButton() + " 键退出休眠模式")))
+                    .setRenderHandler(
+                            LabelElement.instance(Text.literal("Press " + getWakeupButton() + " to exit sleep mode")))
                     .addTo(this);
             ExecutableWidget.instance(40, (this.height * 2) / 3 + 20, this.width - 80, this.height / 3 - 40)
-                    .setElementHandler(
-                            new ButtonElement(TextProvider.of(Text.literal("点击下方按钮以刷新屏幕")), ButtonAction.run(() -> {
+                    .setElementHandler(new ButtonElement(
+                            TextProvider.of(Text.literal("Click the button below to refresh the screen")),
+                            ButtonAction.run(() -> {
                                 if (isScreenSleeping()) {
                                     if (ClientUtils.isPlayerOnline()) {
                                         sleepingScreenInstance = null;
@@ -318,7 +322,7 @@ public class SleepMode extends BaseModule {
     }
 
     private Text getDefaultDisplayText() {
-        return Text.literal("按 " + getWakeupButton() + " 键退出休眠模式");
+        return Text.literal("Press " + getWakeupButton() + " to exit sleep mode");
     }
 
     private static interface SafeSleepingScreen extends SleepOverlay {

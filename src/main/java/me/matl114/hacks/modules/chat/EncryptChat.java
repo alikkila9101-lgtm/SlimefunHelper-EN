@@ -106,7 +106,7 @@ public class EncryptChat extends BaseModule {
     private CharSet ignoredSuffixCharSet = new CharArraySet();
 
     public final StringRef suffixDecrypt = builder(encryptChat.add("decrypt-ignore-suffix"), StringRef.TYPE)
-            .defaultValue("喵")
+            .defaultValue("Meow")
             .updateListener(this::reloadIgnoredSuffix)
             .build();
 
@@ -320,11 +320,12 @@ public class EncryptChat extends BaseModule {
                 }),
                 Style.EMPTY);
         builder.withHoverEvent(ChatUtils.getHoverShowText(List.of(
-                        Text.literal("当前密文:" + result.cipher()),
-                        Text.literal("点击拷贝").formatted(Formatting.YELLOW))))
+                        Text.literal("Current ciphertext:" + result.cipher()),
+                        Text.literal("Click to copy").formatted(Formatting.YELLOW))))
                 .withClickEvent(ChatUtils.getClickCopyText(result.cipher()))
                 .with(replacement + result.suffix())
-                .withHoverEvent(ChatUtils.getHoverShowText(List.of(Text.literal("当前消息由SlimefunHelper解密"))))
+                .withHoverEvent(ChatUtils.getHoverShowText(
+                        List.of(Text.literal("This message was decrypted by SlimefunHelper"))))
                 .withClickEvent(null)
                 .withBold(true)
                 .withColor(Formatting.DARK_PURPLE)
@@ -391,7 +392,8 @@ public class EncryptChat extends BaseModule {
                             selected.getAlgorithm().getEncryption().getEncryptor(secretKey));
                 }
             } catch (Throwable e) {
-                Debug.chat("[ChatEncrypt] 当前密钥格式不正确, 已跳过聊天加密/解密。");
+                Debug.chat(
+                        "[ChatEncrypt] The current key format is invalid, chat encryption/decryption has been skipped.");
                 Debug.info(e);
                 encryptorCache = Encryptor.EMPTY;
             }

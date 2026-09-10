@@ -96,7 +96,8 @@ public class MultiBlockHelper extends BaseModule {
             long currentMs = System.currentTimeMillis();
             if (currentMs > (lastAutoTick + (null == mc.currentScreen ? 2 : 1) * 300)) {
                 if (mc.player != null && mc.player.isSneaking()) {
-                    Debug.chat(Text.literal("[自动多方块] 检测到长按下蹲,清除全部的执行中多方块"));
+                    Debug.chat(Text.literal(
+                            "[AutoMultiBlock] Detected a held sneak, clearing all executing multi-blocks"));
                     clearMultiBlockExecuteTasks();
                 } else {
                     lastAutoTick = currentMs;
@@ -109,7 +110,9 @@ public class MultiBlockHelper extends BaseModule {
                             onMultiBlockExecute(holder.castHandled(), true, false);
                         }
                     } else {
-                        Debug.chat(Text.literal("[自动多方块] 当前执行的界面并没有位置记录,已自动移除"));
+                        Debug.chat(
+                                Text.literal(
+                                        "[AutoMultiBlock] The currently executing screen has no recorded position, removed automatically"));
                         screens.remove(cursorIndex);
                         executeCursor -= 1;
                     }
@@ -207,7 +210,7 @@ public class MultiBlockHelper extends BaseModule {
                     case DELAY_MOVEMENT, MOVEMENT_POST -> clickDelayMovement(result, pitchYaw, rateLimit);
                 }
             } else {
-                Debug.chat(Text.literal("[AC] 你点的太快了,可能无法通过反作弊"));
+                Debug.chat(Text.literal("[AC] You are clicking too fast, this may not pass the anti-cheat"));
             }
         } else {
             for (int i = 0; i < rateLimit; ++i) {
@@ -318,7 +321,9 @@ public class MultiBlockHelper extends BaseModule {
         BlockPos pos = tile.getPos();
         Block block = tile.getBlockType();
         if (pos.toCenterPos().squaredDistanceTo(mc.player.getPos()) > 50) {
-            Debug.chat(Text.literal("[多方块执行] 你离着自动执行的多方块太远了,已关闭自动执行"));
+            Debug.chat(
+                    Text.literal(
+                            "[MultiBlockExec] You are too far from the auto-executing multi-block, auto-execution has been turned off"));
             toggleMultiBlockAutoExecuteState(tile, false);
             return;
         }
@@ -351,14 +356,16 @@ public class MultiBlockHelper extends BaseModule {
             }
         }
         if (!find) {
-            Debug.chat(Text.literal("[多方块执行] 多方块结构与已记录的多方块无法匹配").formatted(Formatting.RED));
+            Debug.chat(
+                    Text.literal("[MultiBlockExec] The multi-block structure does not match the recorded multi-block")
+                            .formatted(Formatting.RED));
             toggleMultiBlockAutoExecuteState(tile, false);
         }
     }
 
     public void clearMultiBlockExecuteTasks() {
-        Debug.chat(
-                Text.literal("[自动多方块] 已清除 %d 个执行中多方块".formatted(screens.size())).formatted(Formatting.GREEN));
+        Debug.chat(Text.literal("[AutoMultiBlock] Cleared %d executing multi-blocks".formatted(screens.size()))
+                .formatted(Formatting.GREEN));
         screens.clear();
         executeCursor = 0;
     }
@@ -369,14 +376,16 @@ public class MultiBlockHelper extends BaseModule {
 
     public void toggleMultiBlockAutoExecuteState(TileInventory screen, boolean val) {
         if (screen.isVirtual()) {
-            Debug.chat(Text.literal("[自动多方块] 找不到该屏幕对应的方块位置"));
+            Debug.chat(Text.literal("[AutoMultiBlock] Cannot find the block position for this screen"));
         } else {
             BlockPos pos = screen.getPos();
             screens.removeIf(i -> Objects.equals(i.getFirst(), pos));
             if (val) {
                 screens.add(Pair.of(pos, screen));
             }
-            Debug.chat(Text.literal("[自动多方块] 已切换该屏幕的自动执行状态,目前有 %d 个自动执行中(长按下蹲以全部关闭)".formatted(screens.size()))
+            Debug.chat(Text.literal(
+                            "[AutoMultiBlock] Toggled auto-execution for this screen, %d currently auto-executing (hold sneak to stop all)"
+                                    .formatted(screens.size()))
                     .formatted(Formatting.GREEN));
         }
     }

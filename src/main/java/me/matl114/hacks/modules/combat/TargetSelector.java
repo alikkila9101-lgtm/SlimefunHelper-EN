@@ -609,7 +609,8 @@ public class TargetSelector extends BaseModule {
                             .name("list")
                             .helper("message.command.friends_command.friends.list.help")
                             .post(e -> e.executor(CommandContext.run(() -> {
-                                Debug.chat(Text.literal("== 当前好友列表 ==").formatted(Formatting.GREEN));
+                                Debug.chat(Text.literal("== Current friends list ==")
+                                        .formatted(Formatting.GREEN));
                                 for (var re : playerList.friends()) {
                                     Debug.chat(re);
                                 }
@@ -624,7 +625,7 @@ public class TargetSelector extends BaseModule {
                                     .build())
                             .arg(SimpleCommandArgs.argumentBuilder()
                                     .name("alias")
-                                    .select("<请输入别名>")
+                                    .select("<Enter an alias>")
                                     .defaultValue("")
                                     .build())
                             .post(e -> e.executor(CommandContext.run((Consumer<ArgumentInputStream>)

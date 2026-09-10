@@ -154,7 +154,7 @@ public class SlimefunDispensorSuggestBookWidget extends SubScreenWidget {
         //        if(SlimefunTasks.isMultiBlockAutoExecute()){
         //            SlimefunTasks.handleMultiBlockAutoExecuteToggle(MinecraftClient.getInstance().currentScreen,
         // false);
-        //            Debug.chat(Text.literal("[自动多方块] 已关闭自动执行!"));
+        //            Debug.chat(Text.literal("[AutoMultiBlock] Auto-execution disabled!"));
         //        }
         toggleBookWidget = ExecutableWidget.instance(0, 0, 8, 8)
                 .setElementHandler(SlotElement.instance(BOOK_ICON)

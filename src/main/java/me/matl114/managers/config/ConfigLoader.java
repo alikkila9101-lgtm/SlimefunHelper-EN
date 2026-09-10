@@ -25,12 +25,13 @@ public class ConfigLoader {
                         SlimefunHelper.getInstance().getClass().getResourceAsStream("/" + internalFileName),
                         file.toPath());
             } catch (Throwable e) {
-                Debug.info("创建配置文件时找不到相关默认配置文件,即将生成空文件");
+                Debug.info(
+                        "No matching default config file found while creating the config, an empty file will be generated");
                 try {
                     Files.createDirectories(file.toPath().getParent());
                     Files.createFile(file.toPath());
                 } catch (IOException e1) {
-                    Debug.info("创建空配置文件失败!");
+                    Debug.info("Failed to create empty config file!");
                 }
             }
         }
@@ -66,7 +67,7 @@ public class ConfigLoader {
                 Files.createFile(cfg.toPath());
                 Files.writeString(cfg.toPath(), "{}");
             } catch (Throwable e) {
-                Debug.info("创建新json文件失败: 文件:", cfg, "错误:");
+                Debug.info("Failed to create new json file: file:", cfg, "Error:");
                 Debug.info(e);
                 return "{}";
             }
@@ -74,7 +75,7 @@ public class ConfigLoader {
         try {
             return Files.readString(cfg.toPath(), StandardCharsets.UTF_8);
         } catch (Throwable e) {
-            Debug.info("读取json文件失败: 文件:", cfg, "错误:");
+            Debug.info("Failed to read json file: file:", cfg, "Error:");
             Debug.info(e);
             return "{}";
         }

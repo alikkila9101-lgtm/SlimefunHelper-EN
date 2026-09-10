@@ -264,7 +264,7 @@ public class NoSlowDown extends BaseModule implements LegalMovementManager.Movem
             clone.sneak(false).sendPlayerSneakUpdatePacket();
             clone.applyInput(mc.player);
             // clone.sneak(lastInput.sneak()).sendPlayerSneakUpdatePacket();
-            Debug.chat("[NoSlow] 取消当前伪造潜行状态");
+            Debug.chat("[NoSlow] Cancelled the current fake sneaking state");
         } else {
             PacketSneakMode mode = fakeStatusBypass.get();
             if (mc.player.isSneaking()) {
@@ -287,7 +287,7 @@ public class NoSlowDown extends BaseModule implements LegalMovementManager.Movem
                             .sendPacket(new ClientCommandC2SPacket(
                                     mc.player, ClientCommandC2SPacket.Mode.START_FALL_FLYING));
                     sneakStatus = true;
-                    Debug.chat("[NoSlow] 成功伪造状态");
+                    Debug.chat("[NoSlow] State faked successfully");
                 }
                 case BAD_PACKET, INTERACT -> {
                     Entity entity;
@@ -326,13 +326,13 @@ public class NoSlowDown extends BaseModule implements LegalMovementManager.Movem
                                             Hand.MAIN_HAND, mc.player.getPos()));
                         });
                         sneakStatus = true;
-                        Debug.chat("[NoSlow] 成功伪造状态");
+                        Debug.chat("[NoSlow] State faked successfully");
                     } else {
                         // out of interact range
                         if (entity == null
                                 || entity.getBoundingBox().squaredMagnitude(mc.player.getEyePos())
                                         > MathUtils.s2(mc.player.getEntityInteractionRange() + 0.5)) {
-                            Debug.chat("[NoSlow] 当前模式下需要一个实体以交互");
+                            Debug.chat("[NoSlow] The current mode requires an entity to interact with");
                             return;
                         }
                         Entity target = Objects.requireNonNull(entity);
@@ -388,7 +388,7 @@ public class NoSlowDown extends BaseModule implements LegalMovementManager.Movem
                                                                 Hand.MAIN_HAND, mc.player.getPos()));
                                             });
                                             mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
-                                            Debug.chat("[NoSlow] 成功伪造状态");
+                                            Debug.chat("[NoSlow] State faked successfully");
                                             sneakStatus = true;
                                         });
                                         // return do not kept
@@ -447,7 +447,7 @@ public class NoSlowDown extends BaseModule implements LegalMovementManager.Movem
                 boolean sneakFlag = (data & (1 << VDataFlag.SNEAKING_FLAG_INDEX)) != 0;
                 if (!sneakFlag) {
                     sneakStatus = false;
-                    Debug.chat("[NoSlow] 伪造的潜行状态被重置了");
+                    Debug.chat("[NoSlow] The fake sneaking state was reset");
                 }
             }
         }

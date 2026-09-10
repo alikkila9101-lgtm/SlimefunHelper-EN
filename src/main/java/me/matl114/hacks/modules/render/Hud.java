@@ -154,7 +154,7 @@ public class Hud extends IRender2DColoredModule {
         int zSgn = EntityUtils.yawToZSgn(yaw);
         String directionName = MathUtils.getDirectionName(xSgn, zSgn);
 
-        // 2. 符号字符串，格式如 "x+z+" 或 "x-z-"，符号为 '+'、'-' 或 '0'
+        // 2. 符号字符串，格式如 "x+z+" or "x-z-"，符号为 '+'、'-' 或 '0'
         String symbolStr = "X" + ((xSgn >= 0) ? "+" : "-") + "Z" + ((zSgn >= 0) ? "+" : "-");
         drawText(vdraw, "%s, %s".formatted(directionName, symbolStr));
     }

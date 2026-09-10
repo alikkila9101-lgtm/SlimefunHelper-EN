@@ -342,7 +342,7 @@ public class SlimefunTasks {
                 String giveCommand = InvTasks.createGiveCommand(itemStack);
                 ChatTasks.sayMessage(giveCommand, true);
             } else {
-                Debug.chat("不存在的id: ", id);
+                Debug.chat("Non-existent id: ", id);
             }
         }
 
@@ -364,9 +364,9 @@ public class SlimefunTasks {
                 RecipeEntry entry = SlimefunTasks.getAllRecipes().get(id);
                 if (entry != null) {
                     getSlimefunGuide().openRecipeEntryMenu(entry);
-                } else Debug.chat("未知错误!");
+                } else Debug.chat("Unknown error!");
             } else {
-                Debug.chat("不存在的id: ", id);
+                Debug.chat("Non-existent id: ", id);
             }
         }
 
@@ -381,7 +381,7 @@ public class SlimefunTasks {
         public void onBanlist(ArgumentInputStream re) {
             String command = "/sf unbanitem ";
             ClientUtils.getServerCommandTabResult(command).thenAccept(s -> {
-                Debug.chat("禁用粘液物品列表");
+                Debug.chat("Disabled Slimefun item list");
                 Map<String, RecipeEntry> records = getAllRecipes();
                 for (var i : s) {
                     RecipeEntry entry = records.get(i);
@@ -395,7 +395,7 @@ public class SlimefunTasks {
                         Debug.chat(i);
                     }
                 }
-                Debug.chat("注:当前列表可能不全,如果服务器禁用物品过多");
+                Debug.chat("Note: this list may be incomplete if the server disables too many items");
             });
         }
     }

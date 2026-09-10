@@ -68,7 +68,7 @@ public class ClickGuiMainScreen extends GenericScreen {
                     .setActiveId(ButtonElement.BUTTON_HIGHLIGHT)
                     .setActivePredicate((el) -> Objects.equals(this.selecting, selecting))
                     .withTooltips(TooltipHandler.of(ChatUtils.parseTooltipsTranslation(
-                            "widget.click-gui.selection." + selecting + ".tooltips", "暂无介绍")));
+                            "widget.click-gui.selection." + selecting + ".tooltips", "No description yet")));
             ExecutableWidget.instance(blank + cnt * width, 0, width, BUTTON_HEIGHT)
                     .setElementHandler(element)
                     .addTo(this);

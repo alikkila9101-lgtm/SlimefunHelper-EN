@@ -168,7 +168,7 @@ public class ServerScanner extends BaseModule {
                                 TextProvider.of(Text.literal("+").formatted(Formatting.BOLD)), ButtonAction.run(() -> {
                                     if (!currentInputAdd.isEmpty()) {
                                         refreshSingle(currentInputAdd);
-                                        logInfo("已添加 " + currentInputAdd);
+                                        logInfo("Added " + currentInputAdd);
                                     }
                                 }))
                         .withTooltips(TooltipHandler.of(List.of(Text.literal("Add Server"))))));
@@ -207,7 +207,7 @@ public class ServerScanner extends BaseModule {
                                     .disableHtmlEscaping()
                                     .create()
                                     .toJson(jsonArray));
-                            logInfo("已拷贝IP列表");
+                            logInfo("Copied the IP list");
                         }))));
         subScreenWidget.addDrawableChild(ExecutableWidget.instance(0, 30, 80, 20)
                 .setElementHandler(
@@ -220,7 +220,7 @@ public class ServerScanner extends BaseModule {
                                 TextProvider.of(Text.literal("-").formatted(Formatting.BOLD)), ButtonAction.run(() -> {
                                     if (!currentInputRemove.isEmpty()) {
                                         removeAll(currentInputRemove);
-                                        logInfo("已移除 " + currentInputRemove);
+                                        logInfo("Removed " + currentInputRemove);
                                     }
                                 }))
                         .withTooltips(TooltipHandler.of(List.of(Text.literal("Remove Server"))))));
@@ -256,14 +256,14 @@ public class ServerScanner extends BaseModule {
     public void startScanTask() {
         logInfo("");
         if (running.get()) {
-            warn("当前任务暂未结束");
+            warn("The current task has not finished yet");
             return;
         }
         Debug.info("start scan with", ipField.get(), portRange1.get(), portRange2.get());
         int range1 = portRange1.get();
         int range2 = portRange2.get();
         if (range1 > range2) {
-            warn("PortA需要比PortB小");
+            warn("PortA must be smaller than PortB");
             return;
         }
         String ipField = this.ipField.get();
@@ -275,7 +275,7 @@ public class ServerScanner extends BaseModule {
             InetSocketAddress address = new InetSocketAddress(ipField, range1);
             InetSocketAddress address2 = new InetSocketAddress(ipField, range2);
         } catch (Throwable e) {
-            warn("输入的IP地址格式有误");
+            warn("The entered IP address format is invalid");
             return;
         }
         running.set(true);
@@ -289,7 +289,7 @@ public class ServerScanner extends BaseModule {
             loop:
             for (var i = 0; i < limitSample; ++i) {
                 if (!running.get()) {
-                    logInfo("任务已终止!");
+                    logInfo("Task terminated!");
                     break loop;
                 }
                 String fullIp;
@@ -306,19 +306,19 @@ public class ServerScanner extends BaseModule {
                         break loop;
                     }
                 } while (scannCopy.contains(fullIp));
-                logInfo("扫描" + fullIp);
+                logInfo("Scanning " + fullIp);
                 scannCopy.add(fullIp);
                 pingServer(pinger, backend, fullIp, filter);
                 try {
-                    logInfo("间隔中...");
+                    logInfo("In interval...");
                     Thread.sleep(sleepMs);
                 } catch (Throwable e) {
                 }
             }
             if (except) {
-                logInfo("扫描中断");
+                logInfo("Scan interrupted");
             } else {
-                logInfo("扫描结束");
+                logInfo("Scan finished");
             }
             running.set(false);
         });
@@ -327,14 +327,14 @@ public class ServerScanner extends BaseModule {
     public void startScanTaskAsync() {
         logInfo("");
         if (running.get()) {
-            warn("当前任务暂未结束");
+            warn("The current task has not finished yet");
             return;
         }
         Debug.info("start scan with", ipField.get(), portRange1.get(), portRange2.get());
         int range1 = portRange1.get();
         int range2 = portRange2.get();
         if (range1 > range2) {
-            warn("PortA需要比PortB小");
+            warn("PortA must be smaller than PortB");
             return;
         }
         String ipField = this.ipField.get();
@@ -345,7 +345,7 @@ public class ServerScanner extends BaseModule {
             InetSocketAddress address = new InetSocketAddress(ipField, range1);
             InetSocketAddress address2 = new InetSocketAddress(ipField, range2);
         } catch (Throwable e) {
-            warn("输入的IP地址格式有误");
+            warn("The entered IP address format is invalid");
             return;
         }
         running.set(true);
@@ -378,16 +378,16 @@ public class ServerScanner extends BaseModule {
                     completableFutures.add(CompletableFuture.runAsync(
                             () -> {
                                 if (running.get()) {
-                                    logInfo("扫描" + ip);
+                                    logInfo("Scanning " + ip);
                                     pingServer(pinger, backend, ip, filter);
                                 }
                             },
                             executor));
                 }
-                logInfo("异步处理请求中...");
+                logInfo("Processing requests asynchronously...");
                 CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[completableFutures.size()]))
                         .join();
-                logInfo("异步扫描结束");
+                logInfo("Async scan finished");
             }
 
             running.set(false);
@@ -397,10 +397,10 @@ public class ServerScanner extends BaseModule {
     public void abortScanTask() {
         logInfo("");
         if (!running.get()) {
-            logInfo("当前无运行中任务");
+            logInfo("No running task");
             return;
         }
-        logInfo("任务终止中...");
+        logInfo("Terminating task...");
         running.set(false);
     }
 
@@ -456,7 +456,7 @@ public class ServerScanner extends BaseModule {
 
     public void refreshServerList(List<String> refreshList, int delay) {
         if (running.get()) {
-            logInfo("当前任务暂未结束");
+            logInfo("The current task has not finished yet");
             return;
         }
         running.set(true);
@@ -467,17 +467,17 @@ public class ServerScanner extends BaseModule {
             List<String> list = List.copyOf(refreshList);
             for (var lst : list) {
                 if (!running.get()) {
-                    logInfo("刷新中断");
+                    logInfo("Refresh interrupted");
                     return;
                 }
-                logInfo("刷新" + lst + "中");
+                logInfo("Refreshing " + lst + "...");
                 pingServer(pinger, backend, lst, false);
                 try {
                     Thread.sleep(delay);
                 } catch (Throwable e) {
                 }
             }
-            logInfo("已完成刷新");
+            logInfo("Refresh complete");
             running.set(false);
         });
     }
@@ -647,7 +647,7 @@ public class ServerScanner extends BaseModule {
                         .setAlignment(-1)
                         .withInputHandler(new ButtonElement(TextProvider.of(Text.empty()), ButtonAction.run(() -> {
                             mc.keyboard.setClipboard(ip);
-                            logInfo("成功拷贝ip");
+                            logInfo("Copied the ip successfully");
                         })))
                         .withTooltips(TooltipHandler.of(List.of(Text.literal("Click to copy ip"))))));
         ServerInfo info = cachedPingResult.get(ip);
@@ -695,7 +695,7 @@ public class ServerScanner extends BaseModule {
             return Text.empty();
         }
         if (serverInfo.players == null) {
-            return Text.literal("加载中...");
+            return Text.literal("Loading...");
         }
         return Text.literal(serverInfo.players.online() + "/" + serverInfo.players.max())
                 .formatted(Formatting.GRAY);
@@ -710,8 +710,8 @@ public class ServerScanner extends BaseModule {
 
     private List<Text> getServerInfoHover(ServerInfo serverInfo) {
         List<Text> list = new ArrayList<>();
-        list.add(Text.literal("服务器协议号:" + serverInfo.protocolVersion));
-        list.add(Text.literal("服务器玩家:"));
+        list.add(Text.literal("Server protocol version:" + serverInfo.protocolVersion));
+        list.add(Text.literal("Server players:"));
         list.addAll(serverInfo.playerListSummary);
         return list;
     }

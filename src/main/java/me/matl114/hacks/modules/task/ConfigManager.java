@@ -84,7 +84,7 @@ public class ConfigManager extends BaseModule {
                 .build();
         SimpleCommandArgs.Argument manualPathArgument = SimpleCommandArgs.argumentBuilder()
                 .name("path")
-                .tabCompletor(TabResult.ofStreamSupplier(() -> Stream.of("<填写路径>")))
+                .tabCompletor(TabResult.ofStreamSupplier(() -> Stream.of("<Enter path>")))
                 .build();
         SimpleCommandArgs.Argument pathPrefixArgument = SimpleCommandArgs.argumentBuilder()
                 .name("path_prefix")
@@ -93,7 +93,7 @@ public class ConfigManager extends BaseModule {
                 .build();
         SimpleCommandArgs.Argument fileLoadArgument = SimpleCommandArgs.argumentBuilder()
                 .name("path")
-                .tabCompletor(TabResult.ofStreamSupplier(() -> Stream.of("<填写路径>")))
+                .tabCompletor(TabResult.ofStreamSupplier(() -> Stream.of("<Enter path>")))
                 .tabCompletor(
                         TabResult.ofStreamSupplier(CommandUtils.fileSupplier(FileManager.CONFIG_SAVE_FOLDER, (sx) -> {
                             return sx.endsWith(".nbt") || sx.endsWith(".dat");
@@ -249,17 +249,18 @@ public class ConfigManager extends BaseModule {
 
     public void onOpen() {
         Tasks.scheduleDelayed(MainTasks::openConfigNewStyleScreen, 1);
-        Debug.chat(Text.literal("成功打开配置文件界面").formatted(Formatting.GREEN));
+        Debug.chat(Text.literal("Opened the config screen successfully").formatted(Formatting.GREEN));
     }
 
     public void onReload() {
         Tasks.scheduleDelayed(Config::reloadAll, 1);
-        Debug.chat(Text.literal("成功重载配置文件").formatted(Formatting.GREEN));
+        Debug.chat(Text.literal("Reloaded the config file successfully").formatted(Formatting.GREEN));
     }
 
     public void onOpenFolder() {
         Util.getOperatingSystem().open(FileManager.CONFIG_SAVE_FOLDER);
-        Debug.chat(Text.literal("成功打开配置保存与导入文件夹").formatted(Formatting.GREEN));
+        Debug.chat(Text.literal("Opened the config save and import folder successfully")
+                .formatted(Formatting.GREEN));
     }
 
     public void onSet(ArgumentInputStream args) {
@@ -269,23 +270,26 @@ public class ConfigManager extends BaseModule {
 
         Config config = Config.REGISTRY.get(Identifier.tryParse(configName));
         if (config == null) {
-            Debug.chat(Text.literal("未找到配置文件: " + configName).formatted(Formatting.RED));
+            Debug.chat(Text.literal("Config file not found: " + configName).formatted(Formatting.RED));
             return;
         }
 
         Ref<?> ref = config.get(rawPath.split("\\."));
         if (ref == null) {
-            Debug.chat(Text.literal("未找到配置项: " + configName + "." + rawPath).formatted(Formatting.RED));
+            Debug.chat(Text.literal("Config entry not found: " + configName + "." + rawPath)
+                    .formatted(Formatting.RED));
             return;
         }
 
         AttrKeyValue<?> keyValue = ref.createKeyValue(rawPath);
         keyValue.valueChange(this, value);
         if (!keyValue.isValidate()) {
-            Debug.chat(Text.literal("配置项格式不正确: " + configName + "." + rawPath).formatted(Formatting.RED));
+            Debug.chat(Text.literal("Invalid config entry format: " + configName + "." + rawPath)
+                    .formatted(Formatting.RED));
             return;
         }
-        Debug.chat(Text.literal("成功设置配置项: " + configName + "." + rawPath).formatted(Formatting.GREEN));
+        Debug.chat(Text.literal("Config entry set successfully: " + configName + "." + rawPath)
+                .formatted(Formatting.GREEN));
     }
 
     public void onReset(ArgumentInputStream args) {
@@ -294,22 +298,25 @@ public class ConfigManager extends BaseModule {
 
         Config config = Config.REGISTRY.get(Identifier.tryParse(configName));
         if (config == null) {
-            Debug.chat(Text.literal("未找到配置文件: " + configName).formatted(Formatting.RED));
+            Debug.chat(Text.literal("Config file not found: " + configName).formatted(Formatting.RED));
             return;
         }
 
         Ref<?> ref = config.get(rawPath.split("\\."));
         if (ref == null) {
-            Debug.chat(Text.literal("未找到配置项: " + configName + "." + rawPath).formatted(Formatting.RED));
+            Debug.chat(Text.literal("Config entry not found: " + configName + "." + rawPath)
+                    .formatted(Formatting.RED));
             return;
         }
         if (!ref.hasDefaultValue()) {
-            Debug.chat(Text.literal("配置项没有默认值: " + configName + "." + rawPath).formatted(Formatting.RED));
+            Debug.chat(Text.literal("Config entry has no default value: " + configName + "." + rawPath)
+                    .formatted(Formatting.RED));
             return;
         }
 
         ref.resetValue();
-        Debug.chat(Text.literal("成功重置配置项: " + configName + "." + rawPath).formatted(Formatting.GREEN));
+        Debug.chat(Text.literal("Config entry reset successfully: " + configName + "." + rawPath)
+                .formatted(Formatting.GREEN));
     }
 
     public void onResetModule(ArgumentInputStream args, ArgumentReader reader) {
@@ -321,7 +328,8 @@ public class ConfigManager extends BaseModule {
             for (var ref : re.getEditableConfig()) {
                 ref.ref().resetValue();
             }
-            Debug.chat(Text.literal("成功重置模块配置项: " + re.getName()).formatted(Formatting.GREEN));
+            Debug.chat(Text.literal("Module config entry reset successfully: " + re.getName())
+                    .formatted(Formatting.GREEN));
         }
     }
 
@@ -341,7 +349,8 @@ public class ConfigManager extends BaseModule {
             } else {
                 var config = Config.REGISTRY.get(Identifier.tryParse(configName));
                 if (config == null) {
-                    Debug.chat(Text.literal("未找到配置文件: " + configName).formatted(Formatting.RED));
+                    Debug.chat(
+                            Text.literal("Config file not found: " + configName).formatted(Formatting.RED));
                     return;
                 }
                 for (var path : config.getVisiblePaths()) {
@@ -353,8 +362,8 @@ public class ConfigManager extends BaseModule {
             }
         } else {
             Debug.chat(
-                    ChatUtils.stringToText("&c该指令将会重置部分配置文件,是否确认? "),
-                    Text.literal("[确认]")
+                    ChatUtils.stringToText("&cThis command will reset some config files, confirm? "),
+                    Text.literal("[Confirm]")
                             .formatted(Formatting.RED)
                             .formatted(Formatting.BOLD)
                             .styled(style -> style.withClickEvent(ChatUtils.getSuggestCommand(
@@ -387,8 +396,8 @@ public class ConfigManager extends BaseModule {
             return;
         }
         if (FileManager.getInstance().hasConfigStorage(fileName)) {
-            Debug.chat(Text.literal("当前配置文件已存在: " + fileName).formatted(Formatting.RED));
-            Debug.chat(Text.literal("点击本文本打开文件夹以查看或重命名")
+            Debug.chat(Text.literal("Config file already exists: " + fileName).formatted(Formatting.RED));
+            Debug.chat(Text.literal("Click this text to open the folder to view or rename")
                     .formatted(Formatting.YELLOW)
                     .styled(style -> style.withClickEvent(ChatUtils.getOpenFile(FileManager.CONFIG_SAVE_FOLDER))));
             return;
@@ -407,7 +416,8 @@ public class ConfigManager extends BaseModule {
                 }
                 Identifier identifier = config.getRegistryKey().getValue();
                 if (isPrivacyConfig(identifier, privacyKeywords)) {
-                    Debug.chat(Text.literal("保存时跳过配置: " + identifier + " 以避免隐私信息泄露(可在设置中调整关键词)")
+                    Debug.chat(Text.literal("Skipped config while saving: " + identifier
+                                    + " to avoid leaking private information (keywords can be adjusted in settings)")
                             .formatted(Formatting.YELLOW));
                     continue;
                 }
@@ -418,7 +428,7 @@ public class ConfigManager extends BaseModule {
         } else {
             Config config = Config.REGISTRY.get(Identifier.tryParse(allName));
             if (config == null) {
-                Debug.chat(Text.literal("未找到配置文件: " + allName).formatted(Formatting.RED));
+                Debug.chat(Text.literal("Config file not found: " + allName).formatted(Formatting.RED));
                 return;
             }
             Map<Identifier, MapRef> snapshotMap = new LinkedHashMap<>();
@@ -442,8 +452,8 @@ public class ConfigManager extends BaseModule {
             return;
         }
         if (FileManager.getInstance().hasConfigStorage(fileName)) {
-            Debug.chat(Text.literal("当前配置文件已存在: " + fileName).formatted(Formatting.RED));
-            Debug.chat(Text.literal("点击本文本打开文件夹以查看或重命名")
+            Debug.chat(Text.literal("Config file already exists: " + fileName).formatted(Formatting.RED));
+            Debug.chat(Text.literal("Click this text to open the folder to view or rename")
                     .formatted(Formatting.YELLOW)
                     .styled(style -> style.withClickEvent(ChatUtils.getOpenFile(FileManager.CONFIG_SAVE_FOLDER))));
             return;
@@ -467,7 +477,8 @@ public class ConfigManager extends BaseModule {
         List<String> privacyKeywords = privacyPathKeywords.get();
         for (var entry : new HashSet<>(snapshotMap.keySet())) {
             if (isPrivacyConfig(entry, privacyKeywords)) {
-                Debug.chat(Text.literal("保存时跳过配置: " + entry + " 以避免隐私信息泄露(可在设置中调整关键词)")
+                Debug.chat(Text.literal("Skipped config while saving: " + entry
+                                + " to avoid leaking private information (keywords can be adjusted in settings)")
                         .formatted(Formatting.YELLOW));
                 snapshotMap.remove(entry);
             }
@@ -480,15 +491,17 @@ public class ConfigManager extends BaseModule {
         DataResult<me.matl114.managers.config.Ref<?>> encoded =
                 ConfigSnapshot.CODEC.encodeStart(ConfigOp.INSTANCE, snapshot);
         if (encoded.isError()) {
-            String message = encoded.error().map(DataResult.Error::message).orElse("未知编码错误");
-            Debug.chat(Text.literal("保存配置快照失败: " + message).formatted(Formatting.RED));
+            String message = encoded.error().map(DataResult.Error::message).orElse("Unknown encoding error");
+            Debug.chat(
+                    Text.literal("Failed to save config snapshot: " + message).formatted(Formatting.RED));
             return;
         }
 
         try (FileStorage storage =
                 FileManager.getInstance().getConfigStorage(fileName).asAutoSave()) {
             storage.write(encoded.result().get(), ConfigOp.INSTANCE);
-            Debug.chat(Text.literal("成功保存配置快照: " + fileName + " ,点击本文本打开文件夹")
+            Debug.chat(Text.literal(
+                            "Config snapshot saved successfully: " + fileName + " ,click this text to open the folder")
                     .formatted(Formatting.GREEN)
                     .styled(style -> style.withClickEvent(
                             ChatUtils.getOpenFile(storage.getFile().getParentFile()))));
@@ -515,7 +528,7 @@ public class ConfigManager extends BaseModule {
         if (!"all".equalsIgnoreCase(name)) {
             config = Config.REGISTRY.get(Identifier.tryParse(name));
             if (config == null) {
-                Debug.chat(Text.literal("未找到配置文件: " + name).formatted(Formatting.RED));
+                Debug.chat(Text.literal("Config file not found: " + name).formatted(Formatting.RED));
                 return;
             }
         }
@@ -525,7 +538,8 @@ public class ConfigManager extends BaseModule {
             for (Map.Entry<Identifier, MapRef> entry : snapshot.snapSnot().entrySet()) {
                 Config config2 = Config.REGISTRY.get(entry.getKey());
                 if (config2 == null) {
-                    Debug.chat(Text.literal("跳过未注册配置: " + entry.getKey()).formatted(Formatting.YELLOW));
+                    Debug.chat(Text.literal("Skipped unregistered config: " + entry.getKey())
+                            .formatted(Formatting.YELLOW));
                     continue;
                 }
                 for (LeafEntry leaf : flattenMapRef(entry.getValue())) {
@@ -555,13 +569,15 @@ public class ConfigManager extends BaseModule {
             }
         }
 
-        Debug.chat(Text.literal("成功加载配置快照" + fileName).formatted(Formatting.GREEN));
+        Debug.chat(
+                Text.literal("Config snapshot loaded successfully" + fileName).formatted(Formatting.GREEN));
     }
 
     public ConfigSnapshot load(String fileName) {
         try (FileStorage storage = FileManager.getInstance().getConfigStorage(fileName, true, false)) {
             if (storage == null) {
-                Debug.chat(Text.literal("配置快照不存在: " + fileName).formatted(Formatting.RED));
+                Debug.chat(Text.literal("Config snapshot does not exist: " + fileName)
+                        .formatted(Formatting.RED));
                 promptSnapshotFolderImport();
                 return null;
             }
@@ -569,8 +585,9 @@ public class ConfigManager extends BaseModule {
             Ref<?> rawSnapshot = storage.asReadOnly(ConfigOp.INSTANCE);
             DataResult<ConfigSnapshot> decoded = ConfigSnapshot.CODEC.parse(ConfigOp.INSTANCE, rawSnapshot);
             if (decoded.isError()) {
-                String message = decoded.error().map(DataResult.Error::message).orElse("未知解码错误");
-                Debug.chat(Text.literal("加载配置快照失败: " + message).formatted(Formatting.RED));
+                String message = decoded.error().map(DataResult.Error::message).orElse("Unknown decoding error");
+                Debug.chat(Text.literal("Failed to load config snapshot: " + message)
+                        .formatted(Formatting.RED));
                 return null;
             }
 
@@ -615,7 +632,8 @@ public class ConfigManager extends BaseModule {
                 }
             }
         }
-        Debug.chat(Text.literal("成功加载配置快照" + fileName).formatted(Formatting.GREEN));
+        Debug.chat(
+                Text.literal("Config snapshot loaded successfully" + fileName).formatted(Formatting.GREEN));
     }
 
     private List<BaseModule> readModuleArguments(me.matl114.utils.commands.params.ArgumentReader argsReader) {
@@ -634,7 +652,7 @@ public class ConfigManager extends BaseModule {
     private void addModuleArgument(List<BaseModule> result, Map<String, BaseModule> moduleMap, String moduleName) {
         BaseModule baseModule = moduleMap.get(moduleName.toLowerCase(Locale.ROOT));
         if (baseModule == null) {
-            Debug.chat(Text.literal("未找到模块: " + moduleName).formatted(Formatting.RED));
+            Debug.chat(Text.literal("Module not found: " + moduleName).formatted(Formatting.RED));
             return;
         }
         if (!result.contains(baseModule)) {
@@ -691,7 +709,8 @@ public class ConfigManager extends BaseModule {
     }
 
     private void promptSnapshotFolderImport() {
-        Debug.chat(Text.literal("请将保存的 config 文件拖到配置快照目录中，点击本文本打开文件夹")
+        Debug.chat(Text.literal(
+                        "Drag the saved config file into the config snapshot directory, or click this text to open the folder")
                 .formatted(Formatting.YELLOW)
                 .styled(style -> style.withClickEvent(ChatUtils.getOpenFile(FileManager.CONFIG_SAVE_FOLDER))));
     }
@@ -720,22 +739,22 @@ public class ConfigManager extends BaseModule {
     private static String normalizeSnapshotFileName(String rawPath) {
         String path = rawPath == null ? "" : rawPath.trim();
         if (path.isEmpty()) {
-            throw new IllegalArgumentException("配置快照名称不能为空");
+            throw new IllegalArgumentException("Config snapshot name cannot be empty");
         }
         if (path.contains("/") || path.contains("\\")) {
-            throw new IllegalArgumentException("配置快照名称不能包含路径分隔符");
+            throw new IllegalArgumentException("Config snapshot name cannot contain path separators");
         }
 
         int suffixIndex = path.lastIndexOf('.');
         String baseName = suffixIndex > 0 ? path.substring(0, suffixIndex) : path;
         if (baseName.isEmpty() || ".".equals(baseName) || "..".equals(baseName)) {
-            throw new IllegalArgumentException("配置快照名称不是合法文件名");
+            throw new IllegalArgumentException("Config snapshot name is not a valid file name");
         }
 
         for (int i = 0; i < baseName.length(); i++) {
             char ch = baseName.charAt(i);
             if (ch < 32 || "<>:\"/\\|?*".indexOf(ch) >= 0) {
-                throw new IllegalArgumentException("配置快照名称不是合法文件名: " + rawPath);
+                throw new IllegalArgumentException("Config snapshot name is not a valid file name: " + rawPath);
             }
         }
         return baseName + ".nbt";

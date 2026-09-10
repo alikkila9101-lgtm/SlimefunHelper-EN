@@ -116,7 +116,7 @@ public class SpearAttack extends BaseModule implements LegalMovementManager.Move
             return false;
         }
         if (spearMaxTp.get() < spearDistance.get()) {
-            Debug.chat("[Spear] 参数错误, MaxTp不能小于Distance");
+            Debug.chat("[Spear] Parameter error, MaxTp cannot be smaller than Distance");
             currentWaitBackTick = 0;
             return true;
         }

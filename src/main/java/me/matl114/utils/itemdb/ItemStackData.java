@@ -31,20 +31,20 @@ public interface ItemStackData {
     static ItemStack FAILURE = CustomItemStackBuilder.builder()
             .type(Items.BARRIER)
             .amount(1)
-            .name("&c物品解析失败")
+            .name("&cFailed to parse item")
             .lore()
             .append("")
-            .append("&7详细信息请检查日志")
+            .append("&7Check the logs for details")
             .endLore()
             .build();
 
     static ItemStack MISSING = CustomItemStackBuilder.builder()
             .type(Items.STRUCTURE_VOID)
             .amount(1)
-            .name("&c物品索引缺失")
+            .name("&cItem index missing")
             .lore()
             .append("")
-            .append("&7请修复item-database.json")
+            .append("&7Please fix item-database.json")
             .endLore()
             .build();
 

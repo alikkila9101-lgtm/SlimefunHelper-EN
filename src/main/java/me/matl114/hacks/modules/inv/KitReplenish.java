@@ -966,40 +966,40 @@ public class KitReplenish extends BaseModule {
 
     private boolean onImportKitCommand(CommandExecution sender, ArgumentInputStream streamArgs) {
         if (mc.player == null) {
-            sender.sendMessage("&c当前不在游戏内");
+            sender.sendMessage("&cNot in-game");
             return true;
         }
         String name = streamArgs.nextNonnullString();
         if (findKitByName(name) != null) {
-            sender.sendMessage("&cKit已存在: " + name);
+            sender.sendMessage("&cKit already exists: " + name);
             return true;
         }
         Kit kit = saveInventory(name, mc.player.getInventory(), InventoryUtils.getPlayerInvSize(), Rule.DEFAULT);
         appendKit(kit);
-        sender.sendMessage("&a已导入当前背包为Kit: " + name);
+        sender.sendMessage("&aImported the current inventory as a Kit: " + name);
         return true;
     }
 
     private boolean onImportItemKitCommand(CommandExecution sender, ArgumentInputStream streamArgs) {
         String name = streamArgs.nextNonnullString();
         if (findKitByName(name) != null) {
-            sender.sendMessage("&cKit已存在: " + name);
+            sender.sendMessage("&cKit already exists: " + name);
             return true;
         }
         ItemStack stack = ScreenUtils.getSelectingOrHandItem();
         if (stack == null || stack.isEmpty()) {
-            sender.sendMessage("&c当前没有可导入的物品");
+            sender.sendMessage("&cNo items to import");
             return true;
         }
         ContainerComponent component = stack.get(DataComponentTypes.CONTAINER);
         if (component == null) {
-            sender.sendMessage("&c当前物品不包含容器内容");
+            sender.sendMessage("&cThe current item contains no container contents");
             return true;
         }
         Inventory supplyInventory = loadShulkerAsSupplyInventory(component);
         Kit kit = saveInventory(name, supplyInventory, supplyInventory.size(), Rule.DEFAULT);
         appendKit(kit);
-        sender.sendMessage("&a已导入当前容器物品为Kit: " + name);
+        sender.sendMessage("&aImported the current container items as a Kit: " + name);
         return true;
     }
 
@@ -1007,17 +1007,17 @@ public class KitReplenish extends BaseModule {
         String name = streamArgs.nextNonnullString();
         Kit kit = findKitByName(name);
         if (kit == null) {
-            sender.sendMessage("&c未找到Kit: " + name);
+            sender.sendMessage("&cKit not found: " + name);
             return true;
         }
         this.requestKit = kit;
-        sender.sendMessage("&a已设置本次补给Kit: " + name);
+        sender.sendMessage("&aSet the replenishment Kit for this session: " + name);
         return true;
     }
 
     private void onClearRequestCommand(CommandExecution sender) {
         this.requestKit = null;
-        sender.sendMessage("&a已清除临时补给Kit");
+        sender.sendMessage("&aCleared the temporary replenishment Kit");
     }
 
     private boolean onStartCommand(PlayerEntity ignored, ArgumentInputStream streamArgs) {
@@ -1027,14 +1027,14 @@ public class KitReplenish extends BaseModule {
 
     private void onEditCommand(CommandExecution sender) {
         Tasks.scheduleDelayed(this::openKitEditScreen, 1);
-        sender.sendMessage("&a正在打开Kit编辑界面");
+        sender.sendMessage("&aOpening the Kit editor");
     }
 
     private void onGiveCommand(CommandExecution sender, ArgumentInputStream streamArgs) {
         String name = streamArgs.nextNonnullString();
         Kit kit = findKitByName(name);
         if (kit == null) {
-            sender.sendMessage("&c未找到Kit: " + name);
+            sender.sendMessage("&cKit not found: " + name);
             return;
         }
         if (mc.interactionManager.getCurrentGameMode().isCreative()) {
@@ -1044,7 +1044,7 @@ public class KitReplenish extends BaseModule {
                 InvTasks.setCreativeInventory(inventory.getStack(i), i);
             }
         } else {
-            sender.sendMessage("&c当前并不处于创造模式,无法使用该功能");
+            sender.sendMessage("&cNot in creative mode, this feature is unavailable");
         }
     }
 
@@ -1052,7 +1052,7 @@ public class KitReplenish extends BaseModule {
         String name = streamArgs.nextNonnullString();
         Kit kit = findKitByName(name);
         if (kit == null) {
-            sender.sendMessage("&c未找到Kit: " + name);
+            sender.sendMessage("&cKit not found: " + name);
             return;
         }
         if (mc.interactionManager.getCurrentGameMode().isCreative()) {
@@ -1072,7 +1072,7 @@ public class KitReplenish extends BaseModule {
             newShulker.set(DataComponentTypes.CUSTOM_NAME, Text.literal(name));
             InvTasks.creativeGive(newShulker, 1);
         } else {
-            sender.sendMessage("&c当前并不处于创造模式,无法使用该功能");
+            sender.sendMessage("&cNot in creative mode, this feature is unavailable");
         }
     }
 
@@ -1337,7 +1337,8 @@ public class KitReplenish extends BaseModule {
         SubScreenWidget kitEditEntry = new SubScreenWidget(0, dblank, dx, dy);
         kitEditEntry.addDrawableChild(createRefKeyLabel(
                 () -> Text.translatable("widget.kit-manager.kit-save-map"),
-                () -> ChatUtils.parseTooltipsTranslation("widget.kit-manager.kit-save-map.tooltips", "暂无介绍"),
+                () -> ChatUtils.parseTooltipsTranslation(
+                        "widget.kit-manager.kit-save-map.tooltips", "No description yet"),
                 indexWidth,
                 dy));
         kitEditEntry.addDrawableChild(createExecuteButton(

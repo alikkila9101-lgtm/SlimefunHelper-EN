@@ -118,7 +118,7 @@ public class PathManager extends BaseModule {
     @Override
     public void unregisterAll() {
         super.unregisterAll();
-        finishPath("模块卸载", null);
+        finishPath("Module unloaded", null);
         stopCurrentRunningBaritone();
     }
 
@@ -235,11 +235,11 @@ public class PathManager extends BaseModule {
 
     private boolean onStart(CommandExecution context, ArgumentInputStream args, ArgumentReader rest) {
         if (checkNull()) {
-            context.sendMessage("&c当前不在游戏内，无法开始路径录制");
+            context.sendMessage("&cNot in-game, cannot start path recording");
             return true;
         }
         if (recordingStorage != null) {
-            context.sendMessage("&c当前已经在录制路径: " + recordingPathFile);
+            context.sendMessage("&cAlready recording a path: " + recordingPathFile);
             return true;
         }
         String pathFile = args.nextNonnullString();
@@ -249,110 +249,114 @@ public class PathManager extends BaseModule {
         }
         File file = new File(SAVE_FILE, pathFile);
         if (!"force".equals(force) && file.exists()) {
-            context.sendMessage("&c路径文件已存在: " + pathFile + "，请输入 force 或更换文件名");
+            context.sendMessage(
+                    "&cPath file already exists: " + pathFile + ", enter force or use a different file name");
             return true;
         }
         startPath(pathFile, FileManager.getInstance().getStorage(file));
-        context.sendMessage("&a开始等待鞘翅飞行，路径文件: " + pathFile);
+        context.sendMessage("&aWaiting for elytra flight to begin, path file: " + pathFile);
         return true;
     }
 
     private boolean onReStart(CommandExecution context, ArgumentInputStream args, ArgumentReader rest) {
         if (checkNull()) {
-            context.sendMessage("&c当前不在游戏内，无法开始路径录制");
+            context.sendMessage("&cNot in-game, cannot start path recording");
             return true;
         }
         if (recordingStorage != null) {
-            context.sendMessage("&c当前已经在录制路径: " + recordingPathFile);
+            context.sendMessage("&cAlready recording a path: " + recordingPathFile);
             return true;
         }
         String pathFile = args.nextNonnullString();
         FileStorage storage = FileManager.getInstance().getStorage(new File(SAVE_FILE, pathFile), true, false);
         if (storage == null) {
-            context.sendMessage("&c路径文件不存在: " + pathFile);
+            context.sendMessage("&cPath file does not exist: " + pathFile);
             return true;
         }
         var loadedPath = readPath(storage);
         if (loadedPath == null || loadedPath.bp().isEmpty()) {
-            context.sendMessage("&c路径文件为空或格式不正确: " + pathFile);
+            context.sendMessage("&cPath file is empty or malformed: " + pathFile);
             storage.markDeprecated(true);
             return true;
         }
         String currentServer = CommonUtils.getServerName();
         String currentWorld = currentWorldKey();
         if (!Objects.equals(loadedPath.server(), currentServer)) {
-            context.sendMessage("&e路径服务器不一致: 文件=" + loadedPath.server() + " 当前=" + currentServer + "，仍继续加载");
+            context.sendMessage("&ePath server mismatch: file=" + loadedPath.server() + " current=" + currentServer
+                    + ", loading anyway");
         }
         if (!Objects.equals(loadedPath.world(), currentWorld)) {
-            context.sendMessage("&c路径维度不一致: 文件=" + loadedPath.world() + " 当前=" + currentWorld + "，已取消加载");
+            context.sendMessage("&cPath dimension mismatch: file=" + loadedPath.world() + " current=" + currentWorld
+                    + ", loading cancelled");
             storage.markDeprecated(true);
             return true;
         }
         restartPath(pathFile, storage, loadedPath.bp());
-        context.sendMessage("&a已载入历史路线记录，路径文件: " + pathFile);
+        context.sendMessage("&aLoaded historical route record, path file: " + pathFile);
         onPause(context);
         return true;
     }
 
     private void onPush(CommandExecution context) {
         if (recordingStorage == null || recordingPath == null) {
-            context.sendMessage("&c当前没有正在录制的路径");
+            context.sendMessage("&cNo path is currently being recorded");
             return;
         }
         startSnapshot(mc.player.getBlockPos());
-        context.sendMessage("&a当前位置以添加");
+        context.sendMessage("&aCurrent position added");
         return;
     }
 
     public void onPop(CommandExecution context) {
         if (recordingStorage == null || recordingPath == null) {
-            context.sendMessage("&c当前没有正在录制的路径");
+            context.sendMessage("&cNo path is currently being recorded");
             return;
         }
         if (recordingPath.bp.isEmpty()) {
-            context.sendMessage("&c当前没有多余的路径点");
+            context.sendMessage("&cNo extra path points available");
             return;
         }
 
         recordingPath.bp.remove(recordingPath.bp.size() - 1);
         restartSnapshot();
-        context.sendMessage("&a当前位置以添加");
+        context.sendMessage("&aCurrent position added");
         return;
     }
 
     public void onPause(CommandExecution context) {
         if (recordingStorage == null || recordingPath == null) {
-            context.sendMessage("&c当前没有正在录制的路径");
+            context.sendMessage("&cNo path is currently being recorded");
             return;
         }
         pauseRecord = true;
-        context.sendMessage(Text.literal("&a当前记录已暂停, 输入!!pathm modify continue (点击该文本以补全)继续录制")
+        context.sendMessage(Text.literal(
+                        "&aRecording paused, enter !!pathm modify continue (click this text to autocomplete) to resume recording")
                 .styled(s -> s.withClickEvent(
                         ChatUtils.getSuggestCommand(MainCommand.getMainCommandPrefix() + "pathm modify continue"))));
     }
 
     public void onContinue(CommandExecution context) {
         if (recordingStorage == null || recordingPath == null) {
-            context.sendMessage("&c当前没有正在录制的路径");
+            context.sendMessage("&cNo path is currently being recorded");
             return;
         }
         pauseRecord = false;
-        context.sendMessage("&a当前记录已继续");
+        context.sendMessage("&aRecording resumed");
     }
 
     private boolean onStop(CommandExecution context, ArgumentInputStream args, ArgumentReader rest) {
         if (recordingStorage == null) {
-            context.sendMessage("&c当前没有正在录制的路径");
+            context.sendMessage("&cNo path is currently being recorded");
             return true;
         }
-        int size = finishPath("手动停止", context);
-        context.sendMessage("&a路径录制已停止，已保存点数: " + size);
+        int size = finishPath("Stopped manually", context);
+        context.sendMessage("&aPath recording stopped, saved points: " + size);
         return true;
     }
 
     private boolean onLoad(CommandExecution context, ArgumentInputStream args, ArgumentReader rest) {
         if (checkNull()) {
-            context.sendMessage("&c当前不在游戏内，无法加载路径");
+            context.sendMessage("&cNot in-game, cannot load a path");
             return true;
         }
         String pathFile = args.nextNonnullString();
@@ -360,7 +364,7 @@ public class PathManager extends BaseModule {
         RecordPath loadedPath;
         try (FileStorage storage = FileManager.getInstance().getStorage(new File(SAVE_FILE, pathFile), true, false)) {
             if (storage == null) {
-                context.sendMessage("&c路径文件不存在: " + pathFile);
+                context.sendMessage("&cPath file does not exist: " + pathFile);
                 return true;
             }
             storage.read();
@@ -368,17 +372,19 @@ public class PathManager extends BaseModule {
         }
 
         if (loadedPath == null || loadedPath.bp().isEmpty()) {
-            context.sendMessage("&c路径文件为空或格式不正确: " + pathFile);
+            context.sendMessage("&cPath file is empty or malformed: " + pathFile);
             return true;
         }
 
         String currentServer = CommonUtils.getServerName();
         String currentWorld = currentWorldKey();
         if (!Objects.equals(loadedPath.server(), currentServer)) {
-            context.sendMessage("&e路径服务器不一致: 文件=" + loadedPath.server() + " 当前=" + currentServer + "，仍继续加载");
+            context.sendMessage("&ePath server mismatch: file=" + loadedPath.server() + " current=" + currentServer
+                    + ", loading anyway");
         }
         if (!Objects.equals(loadedPath.world(), currentWorld)) {
-            context.sendMessage("&c路径维度不一致: 文件=" + loadedPath.world() + " 当前=" + currentWorld + "，已取消加载");
+            context.sendMessage("&cPath dimension mismatch: file=" + loadedPath.world() + " current=" + currentWorld
+                    + ", loading cancelled");
             return true;
         }
 
@@ -390,53 +396,54 @@ public class PathManager extends BaseModule {
         boolean cutMode = rerunMode.get().isIn(Mode.BARITONE);
         currentPath = createRerunContext(pathFile, alignLoaded, cutMode);
         stopCurrentRunningBaritone();
-        context.sendMessage(
-                "&a已加载路径: " + pathFile + ", 当前位置 %d / %d".formatted(loaded.size() - alignLoaded.size(), loaded.size())
-                        + "，剩余段数: " + currentPath.remainingSegments());
+        context.sendMessage("&aLoaded path: " + pathFile
+                + ", current position %d / %d".formatted(loaded.size() - alignLoaded.size(), loaded.size())
+                + ", remaining segments: " + currentPath.remainingSegments());
         return true;
     }
 
     private boolean onUnload(CommandExecution context, ArgumentInputStream args, ArgumentReader rest) {
         if (currentPath == null) {
-            context.sendMessage("&c当前没有正在加载的路径");
+            context.sendMessage("&cNo path is currently being loaded");
             return true;
         }
         currentPath = null;
         stopCurrentRunningBaritone();
-        context.sendMessage("&c已卸载当前路径");
+        context.sendMessage("&cUnloaded the current path");
         return true;
     }
 
     private boolean onRerun(CommandExecution context, ArgumentInputStream args, ArgumentReader rest) {
         if (currentPath == null) {
-            context.sendMessage("&c当前没有正在加载的路径");
+            context.sendMessage("&cNo path is currently being loaded");
             return true;
         }
         if (rerunningBaritone) {
-            context.sendMessage("&c当前有正在执行的路径, 请使用指令!!rerun stop终止");
+            context.sendMessage("&cA path is currently being executed, use !!rerun stop to terminate it");
             return true;
         }
         rerunningBaritone = true;
         if (rerunMode.get().isIn(Mode.ELYTRA_FLIGHT)) {
-            context.sendMessage("&c当前执行类型为 ELYTRA_FLIGHT, 暂时不支持,请切换为 BARITONE 模式以使用");
+            context.sendMessage(
+                    "&cThe current execution type is ELYTRA_FLIGHT, which is not supported yet; switch to BARITONE mode to use this");
             rerunningBaritone = false;
             return true;
         }
-        context.sendMessage("&a开始重新执行当前路径");
+        context.sendMessage("&aStarting to re-execute the current path");
         return true;
     }
 
     private boolean onRerunStop(CommandExecution context, ArgumentInputStream args, ArgumentReader rest) {
         if (currentPath == null) {
-            context.sendMessage("&c当前没有正在加载的路径");
+            context.sendMessage("&cNo path is currently being loaded");
             return true;
         }
         if (!rerunningBaritone) {
-            context.sendMessage("&c当前没有正在执行的路径");
+            context.sendMessage("&cNo path is currently being executed");
             return true;
         }
         stopCurrentRunningBaritone();
-        context.sendMessage("&c当前执行路径已终止");
+        context.sendMessage("&cCurrent path execution terminated");
         return true;
     }
 
@@ -449,16 +456,16 @@ public class PathManager extends BaseModule {
         File file = new File(SAVE_FILE, pathFile);
         File outputFile = new File(SAVE_FILE, outputPathFile);
         if (!file.exists()) {
-            context.sendMessage("&c路径文件不存在: " + pathFile);
+            context.sendMessage("&cPath file does not exist: " + pathFile);
             return true;
         }
         if (recordingStorage != null
                 && (recordingStorage.getFile().equals(file)
                         || recordingStorage.getFile().equals(outputFile))) {
-            context.sendMessage("&c该路径正在录制中，无法修剪: " + recordingPathFile);
+            context.sendMessage("&cThis path is being recorded and cannot be trimmed: " + recordingPathFile);
             return true;
         }
-        context.sendMessage("&a开始修剪路径: " + pathFile + " -> " + outputPathFile);
+        context.sendMessage("&aTrimming path: " + pathFile + " -> " + outputPathFile);
         CompletableFuture.runAsync(() -> trimPathFile(context, pathFile, file, outputFile, outputFile));
         return true;
     }
@@ -468,7 +475,7 @@ public class PathManager extends BaseModule {
         RecordPath loadedPath;
         try (FileStorage storage = FileManager.getInstance().getStorage(file, true, false)) {
             if (storage == null) {
-                context.sendMessage("&c路径文件不存在: " + pathFile);
+                context.sendMessage("&cPath file does not exist: " + pathFile);
                 return;
             }
             storage.read();
@@ -476,29 +483,29 @@ public class PathManager extends BaseModule {
         } catch (Throwable e) {
             Debug.info("PathManager failed to read path for trim: " + pathFile);
             Debug.info(e);
-            context.sendMessage("&c路径读取失败: " + pathFile);
+            context.sendMessage("&cFailed to read path: " + pathFile);
             return;
         }
         if (loadedPath == null || loadedPath.bp().isEmpty()) {
-            context.sendMessage("&c路径文件为空或格式不正确: " + pathFile);
+            context.sendMessage("&cPath file is empty or malformed: " + pathFile);
             return;
         }
         List<BlockPos> trimmed = trimPath(loadedPath.bp());
         try (FileStorage storage =
                 FileManager.getInstance().getStorage(outputFile, false, true).asAutoSave()) {
             writePath(storage, new RecordPath(trimmed, loadedPath.world(), loadedPath.server()));
-            context.sendMessage("&a路径修剪完成: "
+            context.sendMessage("&aPath trimmed: "
                     + pathFile
                     + " -> "
                     + outputPathFile
-                    + "，原点数: "
+                    + ", original points: "
                     + loadedPath.bp().size()
-                    + "，现点数: "
+                    + ", current points: "
                     + trimmed.size());
         } catch (Throwable e) {
             Debug.info("PathManager failed to write trimmed path: " + outputPathFile);
             Debug.info(e);
-            context.sendMessage("&c路径写入失败: " + outputPathFile);
+            context.sendMessage("&cFailed to write path: " + outputPathFile);
         }
     }
 
@@ -544,7 +551,7 @@ public class PathManager extends BaseModule {
     private void onPreTick(Event<ClientPlayerEntity> event) {
         if (recordingStorage != null) {
             if (checkNull()) {
-                finishPath("录制任务意外退出", null);
+                finishPath("Recording task exited unexpectedly", null);
             } else {
                 ClientPlayerEntity player = mc.player;
                 if (!recordingFlightStarted) {
@@ -561,19 +568,19 @@ public class PathManager extends BaseModule {
     }
 
     private void onWorldSwitch(Event<World> event) {
-        finishPath("切换世界", null);
+        finishPath("World changed", null);
         currentPath = null;
         stopCurrentRunningBaritone();
     }
 
     private void onDisconnect(Event<Void> event) {
-        finishPath("断开连接", null);
+        finishPath("Disconnected", null);
         currentPath = null;
         stopCurrentRunningBaritone();
     }
 
     private void onRespawn(Event<PlayerRespawnS2CPacket> event) {
-        finishPath("玩家重生", null);
+        finishPath("Player respawned", null);
         currentPath = null;
         stopCurrentRunningBaritone();
     }
@@ -612,7 +619,8 @@ public class PathManager extends BaseModule {
                 stack.scale(0.002F * scaling, 0.002F * scaling, 1);
                 VRender.getInstance()
                         .drawTextCameraCoord(
-                                Text.literal("距离: %.1f".formatted(scaling)).asOrderedText(),
+                                Text.literal("Distance: %.1f".formatted(scaling))
+                                        .asOrderedText(),
                                 stack,
                                 Vec3d.ZERO,
                                 VRender.createTextPositionFlag(0, 1),
@@ -707,13 +715,13 @@ public class PathManager extends BaseModule {
             writePath(storage, recordingPath == null ? new RecordPath(List.of()) : recordingPath);
             storage.write();
             if (context != null) {
-                context.sendMessage("&a路径已保存: " + pathFile + "，原因: " + reason);
+                context.sendMessage("&aPath saved: " + pathFile + ", reason: " + reason);
             }
         } catch (Throwable e) {
             Debug.info("PathManager failed to save path: " + pathFile);
             Debug.info(e);
             if (context != null) {
-                context.sendMessage("&c路径保存失败: " + pathFile);
+                context.sendMessage("&cFailed to save path: " + pathFile);
             }
         } finally {
             endPath(storage);
@@ -849,7 +857,7 @@ public class PathManager extends BaseModule {
         DataResult<?> encoded = storage.write(RecordPath.CODEC, path);
         if (encoded.isError()) {
             throw new IllegalArgumentException(
-                    encoded.error().map(error -> error.message()).orElse("未知编码错误"));
+                    encoded.error().map(error -> error.message()).orElse("Unknown encoding error"));
         }
     }
 
@@ -857,7 +865,7 @@ public class PathManager extends BaseModule {
         DataResult<RecordPath> decoded = storage.read(RecordPath.CODEC);
         if (decoded.isError()) {
             Debug.info("PathManager failed to decode path: "
-                    + decoded.error().map(error -> error.message()).orElse("未知解码错误"));
+                    + decoded.error().map(error -> error.message()).orElse("Unknown decoding error"));
             return null;
         }
         return decoded.result().orElse(null);

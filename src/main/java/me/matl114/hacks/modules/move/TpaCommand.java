@@ -103,7 +103,7 @@ public class TpaCommand extends BaseModule {
             Vector3d vector3d = executePos.getPosition(p);
             onTpa(new Vec3d(vector3d.x, vector3d.y, vector3d.z));
         } else {
-            p.sendMessage("输入了无效坐标!");
+            p.sendMessage("Invalid coordinates entered!");
         }
         return true;
     }
@@ -114,7 +114,7 @@ public class TpaCommand extends BaseModule {
             Vector3d vector3d = pos.getPosition(var1);
             onTpa(new Vec3d(vector3d.x, vector3d.y, vector3d.z));
         } else {
-            var1.sendMessage("输入了无效目标位置!");
+            var1.sendMessage("Invalid target position entered!");
         }
         return true;
     }
@@ -137,7 +137,8 @@ public class TpaCommand extends BaseModule {
                 if (player != null) {
                     pos = player.getPos();
                 } else {
-                    var1.sendMessage(Text.literal("找不到实体或者玩家: " + var).formatted(Formatting.RED));
+                    var1.sendMessage(
+                            Text.literal("Cannot find entity or player: " + var).formatted(Formatting.RED));
                     return true;
                 }
             }
@@ -147,7 +148,7 @@ public class TpaCommand extends BaseModule {
                     var vcd3 = executePos.getPosition(var1);
                     pos = new Vec3d(vcd3.x, vcd3.y, vcd3.z);
                 } else {
-                    var1.sendMessage(Text.literal("无效的坐标").formatted(Formatting.RED));
+                    var1.sendMessage(Text.literal("Invalid coordinates").formatted(Formatting.RED));
                     return true;
                 }
             }
@@ -157,7 +158,7 @@ public class TpaCommand extends BaseModule {
                     var vcd3 = executePos.getPosition(var1);
                     pos = new Vec3d(vcd3.x, vcd3.y, vcd3.z);
                 } else {
-                    var1.sendMessage(Text.literal("无效的特殊位置").formatted(Formatting.RED));
+                    var1.sendMessage(Text.literal("Invalid special position").formatted(Formatting.RED));
                     return true;
                 }
             }
@@ -166,12 +167,12 @@ public class TpaCommand extends BaseModule {
                 return true;
             }
             default -> {
-                var1.sendMessage(Text.literal("不存在的mark类型: " + type).formatted(Formatting.RED));
+                var1.sendMessage(Text.literal("Non-existent mark type: " + type).formatted(Formatting.RED));
                 return true;
             }
         }
         MovTasks.MARK = pos;
-        Debug.chat("标记成功: ", ChatUtils.getDisplayedLocationDouble(pos));
+        Debug.chat("Marked successfully: ", ChatUtils.getDisplayedLocationDouble(pos));
         RenderTasks.registerVirtualRenderTask(new RenderTasks.RenderTask(
                         new RenderTasks.BoxObject(sender.dimensions.getBoxAt(MovTasks.MARK), Color.GREEN))
                 .setAutoStop(() -> MovTasks.MARK != pos));

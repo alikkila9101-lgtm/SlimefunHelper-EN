@@ -104,7 +104,7 @@ public class SlimefunChoiceScreen<T> extends SlimefunScreen {
     }
 
     private static final EnumAttrKeyValue<NbtFilterRule> nbtFilter = AttrKeyValue.enumMap(
-            "NBT过滤规则",
+            "NBT filter rules",
             NbtFilterRule.ANY,
             Arrays.stream(NbtFilterRule.values())
                     .collect(

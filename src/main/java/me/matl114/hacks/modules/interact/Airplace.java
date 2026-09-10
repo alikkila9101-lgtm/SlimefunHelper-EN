@@ -147,7 +147,7 @@ public class Airplace extends BaseModule {
         if (DisablerManager.INSTANCE.isGrimSelfCheckDisabled()) {
             targetPos = hitResult.getBlockPos();
         } else {
-            Debug.chat("[AirWall] 当前暂未禁用GrimSelfCheck,无法执行");
+            Debug.chat("[AirWall] GrimSelfCheck is not disabled yet, cannot execute");
         }
     }
 
@@ -260,21 +260,24 @@ public class Airplace extends BaseModule {
         if (DisablerManager.INSTANCE.isGrimSelfCheckDisabled()) {
             if (!DisablerManager.INSTANCE.autoFlushPlaceQueue.get()) {
                 Debug.chat(
-                        "[AirWall] 请先在",
+                        "[AirWall] First, in ",
                         Text.translatable("config.index.disablers"),
-                        "中启用配置项: ",
+                        ", enable the config option: ",
                         Text.translatable("disablers.auto-flush-multi-place-queue"));
                 return;
             }
             ItemStack usingItem = mc.player.getStackInHand(hand);
             if (usingItem.isEmpty()) return;
             if (usingItem.getCount() < 2) {
-                Debug.chat("[AirWall] 手上物品太少,无法执行,该模式下手上尽可能有足够多的方块");
+                Debug.chat(
+                        "[AirWall] Too few items in hand, cannot execute; in this mode, hold as many blocks as possible");
                 return;
             }
             int recommendCnt = Math.min(maxBatch.get(), 48);
             if (usingItem.getCount() < recommendCnt) {
-                Debug.chat("[AirWall] 提示: 我们推荐该模式手上最好有足够多(>= %d)的方块,当前数量可能会导致放置较慢".formatted(recommendCnt));
+                Debug.chat(
+                        "[AirWall] Tip: we recommend holding plenty of blocks (>= %d) in this mode; the current amount may result in slow placement"
+                                .formatted(recommendCnt));
             }
             BlockPos startPos = hitResult.getBlockPos();
             Vec3d centerPos = startPos.toCenterPos();
@@ -301,7 +304,7 @@ public class Airplace extends BaseModule {
                 stateMachine = createStateMachine();
             }
         } else {
-            Debug.chat("[AirWall] 当前暂未禁用GrimSelfCheck,无法执行");
+            Debug.chat("[AirWall] GrimSelfCheck is not disabled yet, cannot execute");
         }
     }
 
@@ -316,12 +319,12 @@ public class Airplace extends BaseModule {
                         <= MathUtils.s2(mc.player.getBlockInteractionRange() + 1)) {
                     stateMachine.step();
                 } else {
-                    Debug.chat("[AirWall] 你移动的位置太多了, 终止任务");
+                    Debug.chat("[AirWall] You moved too far, aborting the task");
                     currentTask = null;
                     stateMachine = null;
                 }
             } else {
-                Debug.chat("[AirWall] 手上的物品被切换了，终止任务");
+                Debug.chat("[AirWall] The item in hand was switched, aborting the task");
                 currentTask = null;
                 stateMachine = null;
             }
@@ -422,7 +425,7 @@ public class Airplace extends BaseModule {
             mc.interactionManager.sendSequencedPacket(
                     mc.world, (seq) -> new PlayerInteractBlockC2SPacket(currentTask.hand, hitResult, seq));
             currentTask = null;
-            Debug.chat("[AirWall] 任务完成");
+            Debug.chat("[AirWall] Task complete");
             return FAST_STATE_NONE;
         }
         return FAST_STATE_WAIT_300MS;

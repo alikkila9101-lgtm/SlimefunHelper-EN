@@ -43,14 +43,14 @@ public class ItemEditor extends BaseModule {
         if (stack != null) {
             openEditScreen(stack, null);
         } else {
-            Debug.chat(Text.literal("你必须选择一个物品以打开").formatted(Formatting.RED));
+            Debug.chat(Text.literal("You must select an item to open it").formatted(Formatting.RED));
         }
     }
 
     @ApiMethod
     public void openEditScreen(ItemStack item, Consumer<ItemStack> callback) {
         if (item.isEmpty()) {
-            Debug.chat(Text.literal("你不能打开空物品的编辑器!"));
+            Debug.chat(Text.literal("You cannot open the editor for an empty item!"));
             return;
         }
         ScreenAccess.of(new ItemEditScreen(Text.empty(), item, callback)).openFromCurrent();

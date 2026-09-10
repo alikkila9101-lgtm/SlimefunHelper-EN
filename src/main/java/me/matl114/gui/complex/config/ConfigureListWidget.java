@@ -99,7 +99,7 @@ public class ConfigureListWidget
                 .setActivePredicate((el) ->
                         Objects.equals(cachedConfigUserSelectIndex.get(this.config.getConfigName()), str.getFirst()))
                 .withTooltips(TooltipHandler.of(
-                        ChatUtils.parseTooltipsTranslation("config.index." + str + ".tooltips", "暂无介绍")));
+                        ChatUtils.parseTooltipsTranslation("config.index." + str + ".tooltips", "No description yet")));
     }
 
     @Override

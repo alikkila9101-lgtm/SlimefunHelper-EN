@@ -83,7 +83,7 @@ public class ChestHistory extends BaseModule {
             .build();
 
     public final NBTRef<Regex> ignoreList = builder(invCache.add("ignore-container-with-title"), Regex.class)
-            .defaultValue(new Regex("^(Slimefun 指南.*|菜单)$"))
+            .defaultValue(new Regex("^(Slimefun Guide.*|Menu)$"))
             .build();
 
     public final FlagRef enableTitle =

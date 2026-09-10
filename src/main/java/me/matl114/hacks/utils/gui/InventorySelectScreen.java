@@ -26,7 +26,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 
 public class InventorySelectScreen extends GenericBackGroundScreen {
-    private static final Text TITLE = Text.literal("缓存物品界面预览");
+    private static final Text TITLE = Text.literal("Cached item screen preview");
     private static final List<Text> TITLE_RULE_TOOLTIPS = java.util.List.of();
 
     private final GridSelectSubScreen<ChestHistory.Entry> grid;
@@ -53,10 +53,14 @@ public class InventorySelectScreen extends GenericBackGroundScreen {
                 this::makeIcon);
     }
 
-    private static final List<Text> RULE_ACCEPT_VIRTUAL =
-            List.of(Text.literal("点击切换容器过滤规则"), Text.empty(), Text.literal("当前过滤规则: 接受虚拟容器(即不存在实体方块的容器)"));
-    private static final List<Text> RULE_REJECT_VIRTUAL =
-            List.of(Text.literal("点击切换容器过滤规则"), Text.empty(), Text.literal("当前过滤规则: 拒绝虚拟容器(即不存在实体方块的容器)"));
+    private static final List<Text> RULE_ACCEPT_VIRTUAL = List.of(
+            Text.literal("Click to toggle the container filter rule"),
+            Text.empty(),
+            Text.literal("Current filter rule: accept virtual containers (containers without a physical block)"));
+    private static final List<Text> RULE_REJECT_VIRTUAL = List.of(
+            Text.literal("Click to toggle the container filter rule"),
+            Text.empty(),
+            Text.literal("Current filter rule: reject virtual containers (containers without a physical block)"));
     private boolean filterVirtual = true;
 
     protected List<Text> provideTitleTooltips(DrawableWidget widget) {
@@ -70,22 +74,23 @@ public class InventorySelectScreen extends GenericBackGroundScreen {
 
     protected DrawableWidget makeIcon(ChestHistory.Entry screen) {
         List<Text> description = new ArrayList<>();
-        description.add(Text.literal("容器标题: ").append(screen.getTitle().orElse(Text.empty())));
-        description.add(Text.literal("左键点击预览容器内容"));
-        description.add(Text.literal("右键点击渲染容器位置(如果有)"));
+        description.add(
+                Text.literal("Container title: ").append(screen.getTitle().orElse(Text.empty())));
+        description.add(Text.literal("Left-click to preview container contents"));
+        description.add(Text.literal("Right-click to render the container position (if any)"));
         description.add(Text.empty());
         final ItemStack icon = screen.getChestType().map(ItemStack::new).orElse(InvTasks.INV_ICON_UNKNOWN);
 
         if (screen.getContainerPosition().isPresent()) {
             ContainerPosition containerPosition = screen.getContainerPosition().get();
             BlockPos pos = containerPosition.getFirst().getPos();
-            description.add(Text.literal("记录位置: ")
+            description.add(Text.literal("Recorded position: ")
                     .append(Text.literal("[%d, %d, %d]".formatted(pos.getX(), pos.getY(), pos.getZ()))
                             .formatted(Formatting.GREEN)));
-            description.add(Text.literal("记录世界: ")
+            description.add(Text.literal("Recorded world: ")
                     .append(Text.literal(containerPosition.world().getValue().toString())));
         } else {
-            description.add(Text.literal("虚拟容器").formatted(Formatting.YELLOW));
+            description.add(Text.literal("Virtual container").formatted(Formatting.YELLOW));
         }
         return ExecutableWidget.instance(0, 0, 16, 16)
                 .setElementHandler(SlotElement.instance(icon == null ? InvTasks.INV_ICON_UNKNOWN : icon)

@@ -14,18 +14,18 @@ public class NotificationServerProcess {
 
     public static void main(String[] args) {
         if (args.length < 2) {
-            System.err.println("用法: NotificationServer <标题> <消息>");
+            System.err.println("Usage: NotificationServer <title> <message>");
             System.exit(1);
             return;
         }
 
         String title = args[0];
         String message = args[1];
-        System.out.println("[NotificationServer] 发送通知: title=" + title + ", message=" + message);
+        System.out.println("[NotificationServer] Send notification: title=" + title + ", message=" + message);
 
         // 检查 SystemTray 支持
         if (!SystemTray.isSupported() || SystemTray.getSystemTray() == null) {
-            System.err.println("[NotificationServer] SystemTray 不支持");
+            System.err.println("[NotificationServer] SystemTray not supported");
             System.exit(1);
             return;
         }
@@ -45,12 +45,12 @@ public class NotificationServerProcess {
 
             // 显示通知
             trayIcon.displayMessage(title, message, TrayIcon.MessageType.INFO);
-            System.out.println("[NotificationServer] 通知已发送");
+            System.out.println("[NotificationServer] Notification sent");
 
             // 保持进程存活一段时间，确保通知显示完成
             Thread.sleep(6000);
         } catch (Exception e) {
-            System.err.println("[NotificationServer] 错误: " + e.getMessage());
+            System.err.println("[NotificationServer] Error: " + e.getMessage());
             e.printStackTrace();
             System.exit(1);
         } finally {
@@ -61,7 +61,7 @@ public class NotificationServerProcess {
                 }
             }
         }
-        System.out.println("[NotificationServer] 完成，退出");
+        System.out.println("[NotificationServer] Done, exiting");
         System.exit(0);
     }
 
@@ -70,7 +70,7 @@ public class NotificationServerProcess {
         private static String javaPath;
 
         static {
-            LOGGER.info("[NotificationHelper] 通知系统初始化（子进程方案）...");
+            LOGGER.info("[NotificationHelper] Initializing notification system (subprocess approach)...");
 
             // 查找 javaw.exe（无控制台窗口的 Java）
             String javaHome = System.getProperty("java.home");
@@ -82,7 +82,7 @@ public class NotificationServerProcess {
                 pb.redirectErrorStream(true);
                 Process proc = pb.start();
                 proc.waitFor();
-                LOGGER.info("[NotificationHelper] Java 子进程可用: {}", javaPath);
+                LOGGER.info("[NotificationHelper] Java subprocess available: {}", javaPath);
             } catch (Exception e) {
                 // 回退到 java.exe
                 javaPath = javaHome + "/bin/java.exe";
@@ -91,9 +91,9 @@ public class NotificationServerProcess {
                     pb.redirectErrorStream(true);
                     Process proc = pb.start();
                     proc.waitFor();
-                    LOGGER.info("[NotificationHelper] Java 子进程可用（回退）: {}", javaPath);
+                    LOGGER.info("[NotificationHelper] Java subprocess available (fallback): {}", javaPath);
                 } catch (Exception e2) {
-                    LOGGER.error("[NotificationHelper] 找不到 Java 可执行文件，通知功能不可用");
+                    LOGGER.error("[NotificationHelper] Cannot find Java executable, notification features unavailable");
                     javaPath = null;
                 }
             }
@@ -136,16 +136,16 @@ public class NotificationServerProcess {
                 if (finished) {
                     int exitCode = proc.exitValue();
                     if (exitCode == 0) {
-                        LOGGER.info("[NotificationHelper] 通知子进程正常退出");
+                        LOGGER.info("[NotificationHelper] Notification subprocess exited normally");
                     } else {
-                        LOGGER.warn("[NotificationHelper] 通知子进程退出码: {}", exitCode);
+                        LOGGER.warn("[NotificationHelper] Notification subprocess exit code: {}", exitCode);
                     }
                 } else {
-                    LOGGER.warn("[NotificationHelper] 通知子进程超时，强制终止");
+                    LOGGER.warn("[NotificationHelper] Notification subprocess timed out, force terminating");
                     proc.destroyForcibly();
                 }
             } catch (Exception e) {
-                LOGGER.error("[NotificationHelper] 通知子进程启动失败: {}", e.getMessage(), e);
+                LOGGER.error("[NotificationHelper] Notification subprocess failed to start: {}", e.getMessage(), e);
             }
         }
     }

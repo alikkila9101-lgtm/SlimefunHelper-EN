@@ -110,7 +110,7 @@ public class SaveItem extends BaseModule {
                     }
                 });
             } catch (Throwable e) {
-                Debug.info("序列化SavedItems数据失败, 错误:");
+                Debug.info("Failed to serialize SavedItems data, error:");
                 Debug.info(e);
             }
         }
@@ -130,10 +130,10 @@ public class SaveItem extends BaseModule {
                 addSaveItem(heldItem);
                 return true;
             } else if (heldItem != null) {
-                Debug.chat(Text.literal("不能保存空物品").formatted(Formatting.RED));
+                Debug.chat(Text.literal("Cannot save an empty item").formatted(Formatting.RED));
             }
         } else {
-            Debug.chat(Text.literal("数据库正在加载,请稍后重试..."));
+            Debug.chat(Text.literal("The database is loading, please try again later..."));
         }
 
         return false;
@@ -143,11 +143,11 @@ public class SaveItem extends BaseModule {
         ensureLoad();
         Pair<String, ItemStackData> dataPair = InvTasks.getCustomItemDatabase().getOrRegisterItem(item);
         if (savedItemDataMap.containsKey(dataPair.getFirst())) {
-            Debug.chat(Text.literal("该物品已经保存过了!").formatted(Formatting.YELLOW));
+            Debug.chat(Text.literal("This item has already been saved!").formatted(Formatting.YELLOW));
         } else {
             savedItemDataMap.put(dataPair.getFirst(), dataPair.getSecond());
             dirty = true;
-            Debug.chat(Text.literal("成功保存物品!").formatted(Formatting.GREEN));
+            Debug.chat(Text.literal("Item saved successfully!").formatted(Formatting.GREEN));
         }
     }
 
@@ -156,7 +156,7 @@ public class SaveItem extends BaseModule {
         String id = InvTasks.getCustomItemDatabase().getItemIdOrNull(item);
         if (id != null && savedItemDataMap.remove(id) != null) {
             dirty = true;
-            Debug.chat(Text.literal("已经成功移除这个保存物品").formatted(Formatting.GREEN));
+            Debug.chat(Text.literal("Successfully removed this saved item").formatted(Formatting.GREEN));
         }
     }
 

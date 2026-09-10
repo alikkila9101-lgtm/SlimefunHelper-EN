@@ -150,16 +150,16 @@ public class AbstractMainCommand implements SubCommand, InterruptionHandler {
             String input) {
         StringBuilder builder = getArgumentPositionPrefix(reader);
         if (argument != null) {
-            builder.append("&c类型错误:参数\"")
+            builder.append("&cType error: parameter \"")
                     .append(argument)
-                    .append("\"需要输入一个")
+                    .append("\" requires a ")
                     .append(type.getDisplayNameZHCN())
-                    .append(",但是输入了:")
+                    .append(", but got: ")
                     .append(input);
         } else {
-            builder.append("&c类型错误: 需要输入一个")
+            builder.append("&cType error: requires a ")
                     .append(type.getDisplayNameZHCN())
-                    .append(",但是输入了:")
+                    .append(", but got: ")
                     .append(input);
         }
         sendMessage(sender, builder.toString());
@@ -175,10 +175,14 @@ public class AbstractMainCommand implements SubCommand, InterruptionHandler {
     public void handleValueAbsent(CommandExecution sender, @Nullable ArgumentReader reader, @Nonnull String argument) {
         StringBuilder builder = getArgumentPositionPrefix(reader);
         if (reader != null) {
-            builder.append("&c值缺失: 并未输入参数\"").append(argument).append("\"的值");
+            builder.append("&cMissing value: no value entered for parameter \"")
+                    .append(argument)
+                    .append("\"");
 
         } else {
-            builder.append("&c值缺失: 并未输入参数\"").append(argument).append("\"的值");
+            builder.append("&cMissing value: no value entered for parameter \"")
+                    .append(argument)
+                    .append("\"");
         }
         sendMessage(sender, builder.toString());
     }
@@ -187,10 +191,10 @@ public class AbstractMainCommand implements SubCommand, InterruptionHandler {
             CommandExecution sender, @Nullable ArgumentReader reader, @Nonnull String argument) {
         StringBuilder builder = getArgumentPositionPrefix(reader);
         if (reader != null) {
-            builder.append("&c值缺失: 参数\"").append(argument).append("\"解析失败");
+            builder.append("&cMissing value: parameter \"").append(argument).append("\" failed to parse");
 
         } else {
-            builder.append("&c值缺失: 参数\"").append(argument).append("\"解析失败");
+            builder.append("&cMissing value: parameter \"").append(argument).append("\" failed to parse");
         }
         sendMessage(sender, builder.toString());
     }
@@ -215,11 +219,11 @@ public class AbstractMainCommand implements SubCommand, InterruptionHandler {
             @Nonnull String input) {
         var builder = getArgumentPositionPrefix(reader);
         if (argument != null) {
-            builder.append("&c值不在范围内: 参数 %s 输入了类型: %s, 需要在范围 %s 之间, 但是输入了%s"
+            builder.append("&cValue out of range: parameter %s entered type: %s, must be between %s, but got %s"
                     .formatted(argument, type.getDisplayNameZHCN(), range, input));
         } else {
-            builder.append(
-                    "&c值不在范围内: 输入了类型: %s, 需要在范围 %s 之间, 但是输入了 %s".formatted(type.getDisplayNameZHCN(), range, input));
+            builder.append("&cValue out of range: entered type: %s, must be between %s, but got %s"
+                    .formatted(type.getDisplayNameZHCN(), range, input));
         }
         sendMessage(sender, builder.toString());
     }
@@ -234,9 +238,9 @@ public class AbstractMainCommand implements SubCommand, InterruptionHandler {
     @Override
     public void handleExecutorInvalid(CommandExecution sender, boolean shouldConsole) {
         if (shouldConsole) {
-            sendMessage(sender, "&c错误! 该指令只能在控制台执行");
+            sendMessage(sender, "&cError! This command can only be executed from the console");
         } else {
-            sendMessage(sender, "&c该指令只能在游戏内执行!");
+            sendMessage(sender, "&cThis command can only be executed in-game!");
         }
     }
 
@@ -245,7 +249,7 @@ public class AbstractMainCommand implements SubCommand, InterruptionHandler {
         if (commandNodeName == null) {
             noPermission(sender);
         } else {
-            sendMessage(sender, "&c你没有权限使用: " + commandNodeName.getAlreadyReadArgStr());
+            sendMessage(sender, "&cYou do not have permission to use: " + commandNodeName.getAlreadyReadArgStr());
         }
     }
 
@@ -262,7 +266,7 @@ public class AbstractMainCommand implements SubCommand, InterruptionHandler {
      * @param fullMessage The full error message
      */
     public void handleLogicalError(CommandExecution sender, String fullMessage) {
-        sendMessage(sender, "&c执行该指令时出现逻辑错误: " + fullMessage);
+        sendMessage(sender, "&cA logic error occurred while executing this command: " + fullMessage);
     }
 
     /**
@@ -271,7 +275,7 @@ public class AbstractMainCommand implements SubCommand, InterruptionHandler {
      * @param var1 The command sender to send the message to
      */
     protected void noPermission(CommandExecution var1) {
-        sendMessage(var1, "&c你没有权限使用该指令!");
+        sendMessage(var1, "&cYou do not have permission to use this command!");
     }
 
     public Stream<String> getHelp(String prefix) {
@@ -303,7 +307,7 @@ public class AbstractMainCommand implements SubCommand, InterruptionHandler {
     protected void showHelpCommand(CommandExecution sender, ArgumentReader command) {
         command.stepAll();
         String already = command.getAlreadyReadArgStr();
-        sender.sendMessage("/%s 全部指令".formatted(already));
+        sender.sendMessage("/%s All commands".formatted(already));
         onCustomHelp(sender, new ArgumentReader(command.getAlreadyReadArgs()))
                 .forEach(s -> sendMessage(sender, "&a" + s));
     }

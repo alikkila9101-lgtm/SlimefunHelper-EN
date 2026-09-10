@@ -124,8 +124,9 @@ public class ClientExtra extends BaseModule {
         registerListener(Listener.getServerLeavePoint(), this::onServerLeave);
     }
 
-    private final Text questionCrash =
-            Text.literal("你的游戏刚才因为未知原因崩溃,但是SlimefunHelper拦截了它").formatted(Formatting.RED);
+    private final Text questionCrash = Text.literal(
+                    "Your game just crashed for an unknown reason, but SlimefunHelper intercepted it")
+            .formatted(Formatting.RED);
 
     private void exitGame() {
         mc.scheduleStop();
@@ -148,24 +149,30 @@ public class ClientExtra extends BaseModule {
                 sb.append(lines[i]);
             }
             if (maxLines > 1 && maxLines < lines.length) {
-                sb.append("\n......(%d行)".formatted(lines.length - maxLines));
+                sb.append("\n......(%d rows)".formatted(lines.length - maxLines));
             }
             detailedMessage = sb.toString();
-            Text literal = ChatUtils.stringToText("&c你的游戏刚刚崩溃了,但是SlimefunHelper拦截了它\n报错信息: " + msg + "\n"
-                    + detailedMessage + "\n如果你须与寻求帮助,请点击下方按钮打开错误报告\n而不是发送这个界面的截图");
+            Text literal = ChatUtils.stringToText(
+                    "&cYour game just crashed, but SlimefunHelper intercepted it\nError message: " + msg + "\n"
+                            + detailedMessage
+                            + "\nIf you need help, please click the button below to open the error report\ninstead of sending a screenshot of this screen");
             List<QuestionScreen.Solution> crashSolutions = List.of(
                     QuestionScreen.Solution.of(
-                            Text.literal("我已知晓, 继续游戏").formatted(Formatting.GREEN), Runnables.doNothing()),
-                    QuestionScreen.Solution.of(Text.literal("打开报告, 继续游戏").formatted(Formatting.YELLOW), () -> {
-                        if (report != null) {
-                            var path = report.getFile();
-                            if (path != null) {
-                                Util.getOperatingSystem().open(report.getFile().getParent());
-                                Util.getOperatingSystem().open(report.getFile());
-                            }
-                        }
-                    }),
-                    QuestionScreen.Solution.of(Text.literal("我已知晓, 退出游戏").formatted(Formatting.RED), this::exitGame));
+                            Text.literal("I understand, keep playing").formatted(Formatting.GREEN),
+                            Runnables.doNothing()),
+                    QuestionScreen.Solution.of(
+                            Text.literal("Open the report, keep playing").formatted(Formatting.YELLOW), () -> {
+                                if (report != null) {
+                                    var path = report.getFile();
+                                    if (path != null) {
+                                        Util.getOperatingSystem()
+                                                .open(report.getFile().getParent());
+                                        Util.getOperatingSystem().open(report.getFile());
+                                    }
+                                }
+                            }),
+                    QuestionScreen.Solution.of(
+                            Text.literal("I understand, quit the game").formatted(Formatting.RED), this::exitGame));
             QuestionScreen screen = new QuestionScreen(literal, crashSolutions);
             checkClientData(screen);
         }

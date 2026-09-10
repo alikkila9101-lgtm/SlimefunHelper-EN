@@ -1,14 +1,14 @@
-##可以通过重载材质包来重载这些功能
+##These features can be reloaded by reloading the resource pack
 #options:
-#  #启动ommc方块模型修复(可能会影响其他模组)(可能因版本问题出现故障)
+#  #Enable ommc block model fix (may affect other mods)(may break on some versions)
 #  enable-model-protect: true
-#  #启用粘液材质覆写,使用slimefun-item-model中的材质id覆写已有粘液物品
+#  #Enable Slimefun texture override: override existing Slimefun items with model ids from slimefun-item-model
 #  enable-slimefun-cmd-override: true
-#  #启用item-model功能,使用该功能会强加载所有材质包的所有模型
+#  #Enable item-model feature: this force-loads all models from all resource packs
 #  enable-item-model-override: true
-#  #启用存储物品解析与展示
+#  #Enable stored item parsing and display
 #  enable-storageitem-display: true
-#  #启用物品粘液信息显示
+#  #Enable Slimefun info display on items
 #
 #  enable-tooltips-display: true
 
@@ -22,10 +22,10 @@
 #  - '^slimefunhelper:slimefunitem/.*$'
 #  - '^slimefunhelper:test/.*$'
 
-#暂时不能重载这部分功能
+#This part cannot be reloaded for now
 
 #hotkeys:
-  #复制粘液id的热键
+  #Hotkey for copying the Slimefun id
 #  slimefunid-copy: LEFT_CONTROL,C,BUTTON_1
 #  test-func: LEFT_CONTROL,T
 #  open-menu: LEFT_CONTROL,G
@@ -62,7 +62,7 @@
 #  hktest3: LEFT_CONTROL,T,3
 #  hktest4: LEFT_CONTROL,T,4
 
-#可以重载这部分功能
+#This part can be reloaded
 
 
 

@@ -170,7 +170,7 @@ public class ChatTasks {
                         MainCommand.reloadCommand();
                     }));
                 }
-                default -> Debug.chat("不支持的参数类型: " + re);
+                default -> Debug.chat("Unsupported argument type: " + re);
             }
         }
 
@@ -220,7 +220,7 @@ public class ChatTasks {
                 case "clickgui" -> Tasks.scheduleDelayed(MainTasks.getClickGui()::openClickGui, 1);
                 default -> Tasks.scheduleDelayed(SlimefunTasks.getSlimefunGuide()::openMainGuideMenu, 1);
             }
-            Debug.chat(Text.literal("成功打开界面").formatted(Formatting.GREEN));
+            Debug.chat(Text.literal("Opened the screen successfully").formatted(Formatting.GREEN));
         }
 
         {
@@ -243,7 +243,7 @@ public class ChatTasks {
             try {
                 MainTasks.runSpecialTask(val, extraArg);
             } catch (Throwable e) {
-                Debug.chat("运行Task出现错误!:", e.getMessage());
+                Debug.chat("Error running Task!:", e.getMessage());
                 Debug.info(e);
             }
             return true;
@@ -268,7 +268,7 @@ public class ChatTasks {
                 try {
                     MainTasks.runSpecialTask(val, extraArg);
                 } catch (Throwable e) {
-                    Debug.chat("运行Task出现错误!:", e.getMessage());
+                    Debug.chat("Error running Task!:", e.getMessage());
                     Debug.info(e);
                 }
             });
@@ -302,7 +302,8 @@ public class ChatTasks {
                     ItemStackUtils.registry().getOptional(registryKey).orElse(null);
             if (result != null) {
                 String filter = re.nextNonnull();
-                Debug.chat(Text.literal(identifier.toString() + "所拥有的注册项:").formatted(Formatting.GREEN));
+                Debug.chat(Text.literal(identifier.toString() + "Owned registry entries:")
+                        .formatted(Formatting.GREEN));
                 Identifier filterId = Identifier.tryParse(filter);
                 boolean namespace = filter.contains(":");
                 for (var id : result.getKeys()) {
@@ -315,7 +316,7 @@ public class ChatTasks {
                     }
                 }
             } else {
-                Debug.chat(Text.literal("不存在的注册表: " + identifier).formatted(Formatting.RED));
+                Debug.chat(Text.literal("Non-existent registry: " + identifier).formatted(Formatting.RED));
             }
         }
 
@@ -364,17 +365,18 @@ public class ChatTasks {
                 }
                 case "seed" -> {
                     datas = List.of(
-                            Text.literal("服务端加密种子: ")
+                            Text.literal("Server encrypted seed: ")
                                     .append(ChatUtils.getDisplayedLong(mc.world.getBiomeAccess().seed)),
-                            Text.literal("当前绑定种子: ")
+                            Text.literal("Currently bound seed: ")
                                     .append(
                                             SeedOre.INSTANCE.hasCurrentSeed()
                                                     ? ChatUtils.getDisplayedLong(SeedOre.INSTANCE.getCurrentSeed())
-                                                    : Text.literal("暂未输入")));
+                                                    : Text.literal("Not entered yet")));
                     onResource0(val, datas);
                 }
                 case "plugins" -> {
-                    Debug.chat(Text.literal("导出Command Namespace获取的数据:").formatted(Formatting.GREEN));
+                    Debug.chat(Text.literal("Exporting data obtained from Command Namespace:")
+                            .formatted(Formatting.GREEN));
                     datas = ClientUtils.getServerCommands().stream()
                             .map(n -> {
                                 var sp = n.split(":");
@@ -386,7 +388,8 @@ public class ChatTasks {
                             .sorted(String::compareTo)
                             .toList();
                     onResource0(val, datas);
-                    Debug.chat(Text.literal("导出Version Tab获取的数据:").formatted(Formatting.GREEN));
+                    Debug.chat(Text.literal("Exporting data obtained from Version Tab:")
+                            .formatted(Formatting.GREEN));
                     ClientUtils.getServerPluginResources().thenAccept((list) -> {
                         onResource0(
                                 val,
@@ -405,13 +408,13 @@ public class ChatTasks {
                     //                            .toList();
                     //                    }
                 default -> {
-                    Debug.chat(Text.literal("不支持的资源: " + val).formatted(Formatting.RED));
+                    Debug.chat(Text.literal("Unsupported resource: " + val).formatted(Formatting.RED));
                 }
             }
         }
 
         private void onResource0(String name, List datas) {
-            Debug.chat(Text.literal(name + "所拥有的数据:").formatted(Formatting.GREEN));
+            Debug.chat(Text.literal(name + "Owned data:").formatted(Formatting.GREEN));
             for (var identifier1 : datas) {
                 Debug.chat(identifier1);
             }
@@ -482,11 +485,11 @@ public class ChatTasks {
                             Debug.chat("Last Death Point Not Present");
                         }
                     } else {
-                        Debug.chat("找不到玩家", user);
+                        Debug.chat("Cannot find the player", user);
                     }
                 }
                 case "spawn" -> {
-                    Debug.chat("当前世界的出生点:");
+                    Debug.chat("Current world spawn point:");
                     BlockPos pos = mc.world.getSpawnPoint().globalPos().pos();
                     RegistryKey<World> key =
                             mc.world.getSpawnPoint().globalPos().dimension();
@@ -499,7 +502,7 @@ public class ChatTasks {
                     //                        if(entity != null){
                     //                           // mc.player.spawn
                     //                        }else{
-                    //                            Debug.chat("找不到玩家", user);
+                    //                            Debug.chat("Cannot find the player", user);
                     //                        }
                 }
                 case "nbt" -> {
@@ -509,7 +512,7 @@ public class ChatTasks {
                         comp.remove("EnderItems");
                         Debug.chat(new NbtTextFormatter("").apply(comp));
                     } else {
-                        Debug.chat("找不到玩家", user);
+                        Debug.chat("Cannot find the player", user);
                     }
                 }
                 case "inventory" -> {
@@ -519,14 +522,15 @@ public class ChatTasks {
                                 () -> {
                                     ScreenAccess.of(new InventoryViewScreen(
                                                     enderInventory,
-                                                    Text.literal("背包预览 - " + entity.getNameForScoreboard()),
+                                                    Text.literal(
+                                                            "Inventory preview - " + entity.getNameForScoreboard()),
                                                     new ItemStack(Items.CHEST)))
                                             .openFromCurrent();
                                 },
                                 2);
 
                     } else {
-                        Debug.chat("找不到玩家", user);
+                        Debug.chat("Cannot find the player", user);
                     }
                 }
                 case "trackinventory" -> {
@@ -544,13 +548,14 @@ public class ChatTasks {
                                 () -> {
                                     ScreenAccess.of(new InventoryViewScreen(
                                                     InventoryUtils.createInventory(stacks),
-                                                    Text.literal("背包追踪预览 - " + entity.getNameForScoreboard()),
+                                                    Text.literal("Inventory tracking preview - "
+                                                            + entity.getNameForScoreboard()),
                                                     new ItemStack(Items.BARRIER)))
                                             .openFromCurrent();
                                 },
                                 2);
                     } else {
-                        Debug.chat("找不到玩家", user);
+                        Debug.chat("Cannot find the player", user);
                     }
                 }
                 case "ender" -> {
@@ -562,18 +567,19 @@ public class ChatTasks {
                                 () -> {
                                     ScreenAccess.of(new InventoryViewScreen(
                                                     enderInventory,
-                                                    Text.literal("末影箱预览 - " + entity.getNameForScoreboard()),
+                                                    Text.literal(
+                                                            "Ender chest preview - " + entity.getNameForScoreboard()),
                                                     new ItemStack(Items.ENDER_CHEST)))
                                             .openFromCurrent();
                                 },
                                 2);
 
                     } else {
-                        Debug.chat("找不到玩家", user);
+                        Debug.chat("Cannot find the player", user);
                     }
                 }
                 case "plist" -> {
-                    Debug.chat(Text.literal("当前可视的玩家列表").formatted(Formatting.GREEN));
+                    Debug.chat(Text.literal("Currently visible players").formatted(Formatting.GREEN));
                     mc.getNetworkHandler().getPlayerList().stream()
                             .sorted(Comparator.comparing(e -> VRecord.getName(e.getProfile())))
                             .map(entry -> {
@@ -597,33 +603,35 @@ public class ChatTasks {
                     if (entry != null) {
                         Team team = entry.getScoreboardTeam();
                         if (team != null) {
-                            Debug.chat("该玩家所在Team: ", team.getName());
+                            Debug.chat("The player's Team: ", team.getName());
                             Debug.chat(
-                                    Text.literal("展示名称: ").formatted(Formatting.GRAY),
+                                    Text.literal("Display name: ").formatted(Formatting.GRAY),
                                     team.getDisplayName() == null ? "" : team.getDisplayName());
                             Debug.chat(
-                                    Text.literal("前缀: ").formatted(Formatting.GRAY),
+                                    Text.literal("Prefix: ").formatted(Formatting.GRAY),
                                     team.getPrefix() == null ? "" : team.getPrefix());
                             Debug.chat(
-                                    Text.literal("后缀: ").formatted(Formatting.GRAY),
+                                    Text.literal("Suffix: ").formatted(Formatting.GRAY),
                                     team.getSuffix() == null ? "" : team.getSuffix());
                             Debug.chat(
-                                    Text.literal("颜色: ").formatted(Formatting.GRAY),
+                                    Text.literal("Color: ").formatted(Formatting.GRAY),
                                     team.getColor() == null ? "" : team.getColor());
-                            Debug.chat(Text.literal("友伤: ").formatted(Formatting.GRAY), team.isFriendlyFireAllowed());
                             Debug.chat(
-                                    Text.literal("显示隐身队友: ").formatted(Formatting.GRAY),
+                                    Text.literal("Friendly fire: ").formatted(Formatting.GRAY),
+                                    team.isFriendlyFireAllowed());
+                            Debug.chat(
+                                    Text.literal("Show invisible teammates: ").formatted(Formatting.GRAY),
                                     team.shouldShowFriendlyInvisibles());
-                            Debug.chat(Text.literal("队员列表:").formatted(Formatting.GRAY));
+                            Debug.chat(Text.literal("Team members:").formatted(Formatting.GRAY));
                             Debug.chat(Text.literal("-------------------").formatted(Formatting.GREEN));
                             for (var str : team.getPlayerList()) {
                                 Debug.chat(str);
                             }
                         } else {
-                            Debug.chat("该玩家没有Team");
+                            Debug.chat("This player has no Team");
                         }
                     } else {
-                        Debug.chat("找不到玩家", user);
+                        Debug.chat("Cannot find the player", user);
                     }
                 }
                 case "pentry" -> {
@@ -631,9 +639,9 @@ public class ChatTasks {
                     PlayerListEntry entry =
                             MinecraftClient.getInstance().getNetworkHandler().getPlayerListEntry(user0);
                     if (entry != null) {
-                        Debug.chat("查询到PlayerEntry");
+                        Debug.chat("Found PlayerEntry");
                         Debug.chat(
-                                Text.literal("名字: ").formatted(Formatting.GRAY), VRecord.getName(entry.getProfile()));
+                                Text.literal("Name: ").formatted(Formatting.GRAY), VRecord.getName(entry.getProfile()));
                         Debug.chat(
                                 Text.literal("UUID: ").formatted(Formatting.GRAY),
                                 ChatUtils.getClickCopyTargetText(VRecord.getId(entry.getProfile())
@@ -642,7 +650,7 @@ public class ChatTasks {
                         Debug.chat(
                                 Text.literal("Property: ").formatted(Formatting.GRAY),
                                 ChatUtils.getHoverShowText(
-                                        "[点击查看具体数据]",
+                                        "[Click to view details]",
                                         List.of(Text.literal(VRecord.getProperties(entry.getProfile())
                                                 .toString()))));
                         Debug.chat(
@@ -658,13 +666,13 @@ public class ChatTasks {
                         texts.add(Text.literal("Session: " + entry.getSession()));
                         Debug.chat(
                                 Text.literal("More: ").formatted(Formatting.GRAY),
-                                ChatUtils.getHoverShowText("[点击查看具体数据]", texts));
+                                ChatUtils.getHoverShowText("[Click to view details]", texts));
                     } else {
-                        Debug.chat("该玩家没有PlayerEntry");
+                        Debug.chat("This player has no PlayerEntry");
                     }
                 }
                 case "server" -> {
-                    Debug.chat("当前服务器:");
+                    Debug.chat("Current server:");
                     String ip = CommonUtils.getServerName();
                     Debug.chat(
                             ChatUtils.getClickCopyTargetText(ip).formatted(Formatting.GREEN),
@@ -672,7 +680,7 @@ public class ChatTasks {
                             mc.world.getRegistryKey().getValue());
                 }
                 case "waypoint" -> {
-                    Debug.chat("查询中");
+                    Debug.chat("Querying");
                     PlayerListEntry entry;
                     Predicate<WorldUtils.Waypoint> filter;
                     if ((entry = mc.getNetworkHandler().getPlayerListEntry(user)) != null) {
@@ -735,7 +743,7 @@ public class ChatTasks {
             Listener.getCustomListener()
                     .handleValue(new Event<>(new EventContainer<>(ModulePreset.class, preset1), false, false));
             //
-            Debug.info("已经加载", preset1.name(), "配置预设");
+            Debug.info("Loaded", preset1.name(), "Config preset");
             Config.launchSaveTasks();
         }
 
@@ -883,7 +891,7 @@ public class ChatTasks {
                     }
                 }
             }
-            Debug.chat(ChatUtils.stringToText("&e找不到模块项: " + moduleName));
+            Debug.chat(ChatUtils.stringToText("&eCannot find module entry: " + moduleName));
         }
 
         // todo not complete

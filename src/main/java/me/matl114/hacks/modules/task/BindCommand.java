@@ -120,7 +120,8 @@ public class BindCommand extends BaseModule implements IHotKey {
 
     private void listBindings(CommandExecution execution, ArgumentInputStream args) {
         List<Pair<MultiKeyBind, StringFormat>> list = commands.get().list();
-        execution.sendMessage(Text.literal("bindc 当前绑定: " + list.size() + " 条").formatted(Formatting.GREEN));
+        execution.sendMessage(Text.literal("bindc current bindings: " + list.size() + " entries")
+                .formatted(Formatting.GREEN));
         for (int i = 0; i < list.size(); ++i) {
             Pair<MultiKeyBind, StringFormat> binding = list.get(i);
             MultiKeyBind hotkey = binding.getFirst();
@@ -131,9 +132,11 @@ public class BindCommand extends BaseModule implements IHotKey {
     }
 
     private void showBindCommandHelp(CommandExecution execution, ArgumentInputStream args) {
-        execution.sendMessage(Text.literal("BindCommand 模块说明").formatted(Formatting.GREEN));
-        execution.sendMessage(Text.literal("该模块用于把自定义快捷键绑定到聊天文本、服务端指令或客户端指令。"));
-        execution.sendMessage(Text.literal("触发已配置的快捷键时，会自动发送对应内容。"));
+        execution.sendMessage(Text.literal("BindCommand module description").formatted(Formatting.GREEN));
+        execution.sendMessage(
+                Text.literal("This module binds custom hotkeys to chat text, server commands, or client commands."));
+        execution.sendMessage(Text.literal(
+                "When a configured hotkey is triggered, the corresponding content is sent automatically."));
     }
 
     @Override

@@ -114,7 +114,7 @@ public class TargetCommand extends BaseModule {
         String waypoint = re.nextNonnullString();
         WorldUtils.Waypoint waypointIns = WorldUtils.getWaypoint(waypoint);
         if (waypointIns == null) {
-            p.sendMessage(Text.literal("找不到这个坐标点").formatted(Formatting.RED));
+            p.sendMessage(Text.literal("Cannot find this coordinate point").formatted(Formatting.RED));
         } else {
             WorldUtils.WaypointData waypointData = waypointIns.getData();
             if (waypointData instanceof WorldUtils.WaypointData.Direction dir) {
@@ -126,17 +126,22 @@ public class TargetCommand extends BaseModule {
                     float currentDirection = dir.azimuth();
                     Vec2f vec2f = intersectRays(pos, direction, currentPos, currentDirection);
                     if (vec2f != null) {
-                        p.sendMessage(Text.literal("计算当前坐标点位置大致位于: ")
+                        p.sendMessage(Text.literal("Calculated the current coordinate point to be roughly at: ")
                                 .append(ChatUtils.getDisplayedLocation(new Vec3d(vec2f.x, 64, vec2f.y))));
                     } else {
-                        p.sendMessage(Text.literal("当前位置无法正确推断,请重新选去两点"));
+                        p.sendMessage(
+                                Text.literal(
+                                        "The current position cannot be inferred correctly, please select the two points again"));
                     }
                 } else {
                     lastCachedPosition.put(waypointIns.getDisplayName(), Pair.of(mc.player.getPos(), dir.azimuth()));
-                    p.sendMessage(Text.literal("记录当前测算位置中,请移动若干位置后重新输入指令").formatted(Formatting.GREEN));
+                    p.sendMessage(Text.literal(
+                                    "Recording the current measured position; move to a few positions and re-enter the command")
+                            .formatted(Formatting.GREEN));
                 }
             } else {
-                p.sendMessage(Text.literal("当前坐标点已有确定坐标").formatted(Formatting.GREEN));
+                p.sendMessage(Text.literal("This coordinate point already has confirmed coordinates")
+                        .formatted(Formatting.GREEN));
                 if (waypointData instanceof WorldUtils.WaypointData.Pos pos) {
                     p.sendMessage(Text.literal("Pos: ").append(ChatUtils.getDisplayedLocation(pos.pos())));
                 } else if (waypointData instanceof WorldUtils.WaypointData.Chunk chunk) {
@@ -161,7 +166,7 @@ public class TargetCommand extends BaseModule {
             p.sendMessage(Text.literal("ChunkPos: ")
                     .append(ChatUtils.getDisplayedLocation(blockPos.getX() >> 4, blockPos.getZ() >> 4)));
         } else {
-            p.sendMessage("输入了无效坐标!");
+            p.sendMessage("Invalid coordinates entered!");
         }
     }
 
@@ -176,7 +181,7 @@ public class TargetCommand extends BaseModule {
         String waypoint = re.nextNonnullString();
         WorldUtils.Waypoint waypointIns = WorldUtils.getWaypoint(waypoint);
         if (waypointIns == null) {
-            p.sendMessage(Text.literal("找不到这个坐标点").formatted(Formatting.RED));
+            p.sendMessage(Text.literal("Cannot find this coordinate point").formatted(Formatting.RED));
         } else {
             var waypointData = waypointIns.getData();
             if (waypointData instanceof WorldUtils.WaypointData.Pos pos) {
@@ -202,7 +207,7 @@ public class TargetCommand extends BaseModule {
                     .normalize();
             PlayerStateManager.setPlayerRotationSafe(mc.player, target);
         } else {
-            p.sendMessage("输入了无效坐标!");
+            p.sendMessage("Invalid coordinates entered!");
         }
     }
 

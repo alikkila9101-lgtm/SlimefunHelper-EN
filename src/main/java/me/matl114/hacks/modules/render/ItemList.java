@@ -141,13 +141,13 @@ public class ItemList extends IRender2DColoredModule {
     public void render2D(VDrawContext vdraw, float partialTicks) {
         if (enable.get()) {
             if (!importantItems.isEmpty() && renderImportant.get()) {
-                drawText(vdraw, "重要物品:");
+                drawText(vdraw, "Important items:");
                 for (var spec : importantItems) {
                     drawText(vdraw, spec);
                 }
             }
             if (!simpleItems.isEmpty() && renderSimple.get()) {
-                drawText(vdraw, "物品");
+                drawText(vdraw, "Items");
                 for (var spec : simpleItems) {
                     drawText(vdraw, spec);
                 }

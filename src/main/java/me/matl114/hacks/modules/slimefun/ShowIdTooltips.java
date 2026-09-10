@@ -57,7 +57,7 @@ public class ShowIdTooltips extends BaseModule {
             if (!found) {
                 lore.add(SLIMEFUN_MODID);
             }
-            lore.add(Text.literal("粘液物品ID: ")
+            lore.add(Text.literal("Slimefun item ID: ")
                     .formatted(Formatting.GRAY)
                     .append(Text.literal(id).formatted(Formatting.GREEN)));
             handleGCEInfo(id, stack, lore);
@@ -89,7 +89,7 @@ public class ShowIdTooltips extends BaseModule {
                                 sb.append("??");
                             }
                         }
-                        lores.add(Text.literal("基因工程: ")
+                        lores.add(Text.literal("Genetic Engineering: ")
                                 .formatted(Formatting.GRAY)
                                 .append(Text.literal(sb.toString()).formatted(Formatting.DARK_PURPLE)));
                     }
@@ -107,7 +107,7 @@ public class ShowIdTooltips extends BaseModule {
     public static void handleCLTInfo(String sfid, ItemStack stack, List<Text> lores) {
         if (sfid.startsWith("CLT_PLANT")) {
             if (stack != null && ItemStackUtils.hasCustomData(stack)) {
-                MutableText info = Text.literal("农耕工艺: [").formatted(Formatting.GRAY);
+                MutableText info = Text.literal("Cultivation: [").formatted(Formatting.GRAY);
                 NbtCompound tag = getBukkitValueReadOnly(stack);
                 if (tag != null) {
                     try {
@@ -117,20 +117,20 @@ public class ShowIdTooltips extends BaseModule {
                                 int level = nbt.get(CLT_SEED_DROP_PATH) instanceof NbtInt it ? it.intValue() : 0;
                                 int speed = nbt.get(CLT_SEED_GROWTH_PATH) instanceof NbtInt it ? it.intValue() : 0;
                                 int strength = nbt.get(CLT_SEED_STRENGTH_PATH) instanceof NbtInt it ? it.intValue() : 0;
-                                info.append(Text.literal("等级: ").formatted(Formatting.YELLOW));
+                                info.append(Text.literal("Level: ").formatted(Formatting.YELLOW));
                                 info.append(Text.literal(String.valueOf(level)).formatted(Formatting.GRAY));
-                                info.append(Text.literal(" 速率: ").formatted(Formatting.YELLOW));
+                                info.append(Text.literal(" Speed: ").formatted(Formatting.YELLOW));
                                 info.append(Text.literal(String.valueOf(speed)).formatted(Formatting.GRAY));
-                                info.append(Text.literal(" 强度: ").formatted(Formatting.YELLOW));
+                                info.append(Text.literal(" Strength: ").formatted(Formatting.YELLOW));
                                 info.append(
                                         Text.literal(String.valueOf(strength)).formatted(Formatting.GRAY));
                             }
 
                         } else {
-                            info.append(Text.literal("未初始化属性").formatted(Formatting.RED));
+                            info.append(Text.literal("Uninitialized attributes").formatted(Formatting.RED));
                         }
                     } catch (Throwable e) {
-                        info.append(Text.literal("数据错误").formatted(Formatting.RED));
+                        info.append(Text.literal("Data error").formatted(Formatting.RED));
                     }
                 }
                 info.append(Text.literal("]").formatted(Formatting.GRAY));

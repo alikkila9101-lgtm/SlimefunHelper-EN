@@ -11,16 +11,16 @@ import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.item.ItemStack;
 
 public enum TooltipHideFlag_v1_21_11 implements VHideFlag {
-    HIDE_ALL("全部", null),
-    HIDE_ADDITIONAL("额外", LORE),
-    HIDE_ENCHANT("附魔", ENCHANTMENTS),
-    HIDE_ATTRIBUTE("属性", ATTRIBUTE_MODIFIERS),
-    HIDE_UNBREAKABLE("无法破坏", UNBREAKABLE),
-    HIDE_DESTROYS("可破坏", CAN_BREAK),
-    HIDE_PLACED_ON("可放置", CAN_PLACE_ON),
-    HIDE_DYE("染色", DYED_COLOR),
-    HIDE_ARMOR_TRIM("盔甲纹饰", TRIM),
-    HIDE_STORED_ENCHANTS("附魔书", STORED_ENCHANTMENTS);
+    HIDE_ALL("All", null),
+    HIDE_ADDITIONAL("Additional", LORE),
+    HIDE_ENCHANT("Enchantments", ENCHANTMENTS),
+    HIDE_ATTRIBUTE("Attributes", ATTRIBUTE_MODIFIERS),
+    HIDE_UNBREAKABLE("Unbreakable", UNBREAKABLE),
+    HIDE_DESTROYS("Breakable", CAN_BREAK),
+    HIDE_PLACED_ON("Placeable", CAN_PLACE_ON),
+    HIDE_DYE("Dye", DYED_COLOR),
+    HIDE_ARMOR_TRIM("Armor Trim", TRIM),
+    HIDE_STORED_ENCHANTS("Enchanted Book", STORED_ENCHANTMENTS);
     String name;
 
     @Nullable

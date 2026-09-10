@@ -108,7 +108,8 @@ public class CombatExtra extends BaseModule {
                         // using shield , but banned
                         if (shieldExceptionspam + 4 < Tasks.getTick()) {
                             shieldExceptionspam = Tasks.getTick();
-                            Debug.chat(Text.literal("[AC] 阻挡异常盾牌禁用").formatted(Formatting.RED));
+                            Debug.chat(Text.literal("[AC] Blocking anomaly: shield disabled")
+                                    .formatted(Formatting.RED));
                         }
                         // trackerUpdateS2CPacketEvent.cancel();
                     }

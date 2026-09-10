@@ -211,7 +211,8 @@ public class ClientSideCommand extends BaseModule {
             Map<String, ParsedArgument<ClientCommandSource, ?>> argsMap, String command) throws CommandSyntaxException {
         if (enableGive.get()) {
             if (mc.interactionManager.getCurrentGameMode().isCreative()) {
-                Debug.chat(Text.literal("尝试在客户端执行give指令").formatted(Formatting.GREEN));
+                Debug.chat(Text.literal("Attempting to execute the give command on the client")
+                        .formatted(Formatting.GREEN));
                 ParsedArgument<ClientCommandSource, ?> entityArgument = argsMap.get("targets");
                 EntitySelector entitySelector = (EntitySelector) entityArgument.getResult();
                 StringRange range = entityArgument.getRange();
@@ -226,18 +227,23 @@ public class ClientSideCommand extends BaseModule {
                             : 1;
                     ItemStack itemStackToGive = itemStack.createStack(count, false);
                     InvTasks.creativeGive(itemStackToGive, count);
-                    Debug.chat(Text.literal("命令执行成功！").formatted(Formatting.GREEN));
+                    Debug.chat(Text.literal("Command executed successfully!").formatted(Formatting.GREEN));
                     return true;
                 } else {
-                    Debug.chat(Text.literal("你选中了其他生物,指令转向服务端执行!").formatted(Formatting.YELLOW));
+                    Debug.chat(Text.literal(
+                                    "You selected another creature, the command falls back to server-side execution!")
+                            .formatted(Formatting.YELLOW));
                     return false;
                 }
             } else {
-                Debug.chat(Text.literal("你启用了客户端指令的功能,但是你并不是创造模式!").formatted(Formatting.YELLOW));
+                Debug.chat(Text.literal("You enabled client-side commands, but you are not in creative mode!")
+                        .formatted(Formatting.YELLOW));
                 return false;
             }
         } else {
-            Debug.chat(Text.literal("尝试在客户端执行give指令,但是你没有启用客户端give指令").formatted(Formatting.RED));
+            Debug.chat(Text.literal(
+                            "Attempting to execute the give command on the client, but you have not enabled the client-side give command")
+                    .formatted(Formatting.RED));
             return false;
         }
     }

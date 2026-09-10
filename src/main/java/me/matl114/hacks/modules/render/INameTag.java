@@ -132,10 +132,10 @@ public abstract class INameTag extends BaseModule {
     private static final Map<String, Text> INTERNAL_PREFIX = Map.of(
             "||juhaoniubi666",
                     ChatUtils.stringToText(
-                            "§x§a§f§b§1§d§9[§x§a§9§b§b§d§b大§x§a§3§c§5§d§d啥§x§9§d§c§f§d§f比§x§9§7§d§9§e§1]"),
+                            "§x§a§f§b§1§d§9[§x§a§9§b§b§d§bD§x§a§3§c§5§d§du§x§9§d§c§f§d§fm§x§9§7§d§9§e§1]"),
             "_juhao_",
                     ChatUtils.stringToText(
-                            "§x§a§f§b§1§d§9[§x§a§9§b§b§d§b大§x§a§3§c§5§d§d啥§x§9§d§c§f§d§f比§x§9§7§d§9§e§1]"));
+                            "§x§a§f§b§1§d§9[§x§a§9§b§b§d§bD§x§a§3§c§5§d§du§x§9§d§c§f§d§fm§x§9§7§d§9§e§1]"));
 
     private static Text getDurationText(int duration) {
         if (duration > Integer.MAX_VALUE - 1) {
@@ -226,11 +226,11 @@ public abstract class INameTag extends BaseModule {
                     PlayerStateManager.PlayerStatus status = PlayerStateManager.INSTANCE.getPlayerStatus(player);
                     if (status != null) {
                         if (status.protection > 0) {
-                            subTexts.add(Text.literal("保护%d".formatted(status.protection))
+                            subTexts.add(Text.literal("Protection %d".formatted(status.protection))
                                     .withColor(infoColor.get().asRGB()));
                         }
                         if (status.blastProtection > 0) {
-                            subTexts.add(Text.literal("爆炸%d".formatted(status.blastProtection))
+                            subTexts.add(Text.literal("Blast Protection %d".formatted(status.blastProtection))
                                     .withColor(infoColor.get().asRGB()));
                         }
                     }

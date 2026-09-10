@@ -1411,7 +1411,8 @@ public class NoFall extends BaseModule implements LegalMovementManager.MovementM
 
         public void checkVersion() {
             if (!ViaFabricPlusHooks.isSupportDupRot()) {
-                Debug.chat("[NoFall] 该模式需要via切换至1.20.6以下,已自动切换至其他模式");
+                Debug.chat(
+                        "[NoFall] This mode requires Via to switch below 1.20.6, automatically switched to another mode");
                 this.module.noFallMode.set(Mode.LAZY_GRIM_PLUS);
             }
         }
@@ -1951,7 +1952,8 @@ public class NoFall extends BaseModule implements LegalMovementManager.MovementM
                 if (noFallMode.get() != Mode.LAZY_GRIM_PLUS) {
                     noFallMode.set(Mode.LAZY_GRIM_PLUS);
                     //                    if (noFall.get()) {
-                    //                        Debug.chat("正在切换到GrimNoFall模式, 该功能可能在最新版本失效, 若失效请手动切换LazyGrim模式");
+                    //                        Debug.chat("Switching to GrimNoFall mode; this feature may break in the
+                    // latest version, if it does please switch to LazyGrim mode manually");
                     //                    }
                 }
             }

@@ -29,11 +29,11 @@ public class TypeError extends ArgumentException {
 
     @Getter
     public static enum BaseArgumentType {
-        INT("整形", "Integer"),
-        FLOAT("浮点型", "Float"),
-        BOOLEAN("布尔型", "Boolean"),
-        STRING("字符串", "String"),
-        ENUM("枚举型", "Enum");
+        INT("Integer", "Integer"),
+        FLOAT("Float", "Float"),
+        BOOLEAN("Boolean", "Boolean"),
+        STRING("String", "String"),
+        ENUM("Enum", "Enum");
         String displayNameZHCN;
         String displayNameENUS;
 

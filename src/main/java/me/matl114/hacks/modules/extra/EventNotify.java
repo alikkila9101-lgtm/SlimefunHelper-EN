@@ -52,7 +52,7 @@ public class EventNotify extends BaseModule {
     public final FlagRef enableQueue = flagBuilder(path.add("enable-queue")).build();
 
     public final NBTRef<Regex> queueRegex = builder(path.add("queue-3c-title-regex"), Regex.class)
-            .defaultValue(new Regex(".*(正在游玩.*队列位置|Position.*queue)[：:]\\s*(\\d+)"))
+            .defaultValue(new Regex(".*(Playing.*queue position|Position.*queue)[：:]\\s*(\\d+)"))
             .build();
 
     public final NBTRef<IntPrimitiveList> order = builder(path.add("order"), IntPrimitiveList.class)
@@ -94,7 +94,7 @@ public class EventNotify extends BaseModule {
                                 if (checkMin()) {
                                     return;
                                 }
-                                notify("[SlimefunHelper]排队提醒", "你已经抵达队列位置: " + val);
+                                notify("[SlimefunHelper]Queue reminder", "You have reached queue position: " + val);
                                 return;
                             }
                         }
@@ -113,7 +113,7 @@ public class EventNotify extends BaseModule {
                 if (checkMin()) {
                     return;
                 }
-                notify("[SlimefunHelper]排队提醒", "你已经完成排队进入服务器!");
+                notify("[SlimefunHelper]Queue reminder", "You have finished queueing and entered the server!");
             }
         }
     }
@@ -127,7 +127,7 @@ public class EventNotify extends BaseModule {
             if (checkMin()) {
                 return;
             }
-            notify("[SlimefunHelper]图腾提醒", "你触发了不死图腾");
+            notify("[SlimefunHelper]Totem reminder", "You triggered the Totem of Undying");
         }
     }
 
@@ -136,7 +136,7 @@ public class EventNotify extends BaseModule {
             if (checkMin()) {
                 return;
             }
-            notify("[SlimefunHelper]离线提醒", "你离开了服务器");
+            notify("[SlimefunHelper]Offline reminder", "You left the server");
         }
     }
 
@@ -146,8 +146,8 @@ public class EventNotify extends BaseModule {
                 return;
             }
             notify(
-                    "[SlimefunHelper]Baritone提醒",
-                    "Baritone落地: " + event.<BaritoneLanding>getArgs(0).name());
+                    "[SlimefunHelper]Baritone reminder",
+                    "Baritone landed: " + event.<BaritoneLanding>getArgs(0).name());
         }
     }
 
@@ -172,7 +172,7 @@ public class EventNotify extends BaseModule {
         acceptor.accept(createExecuteButton(
                 "widget.event-notify.test-usage",
                 ButtonAction.run(() -> {
-                    notify("[SlimefunHelper]测试", "HelloWorld");
+                    notify("[SlimefunHelper]Test", "HelloWorld");
                 }),
                 0,
                 dblank,

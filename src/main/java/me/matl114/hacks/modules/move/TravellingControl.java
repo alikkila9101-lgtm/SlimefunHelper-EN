@@ -246,11 +246,11 @@ public class TravellingControl extends BaseModule implements LegalMovementManage
             if (mc.player != null && travelDelegate != null) {
                 var info = travelTask;
                 if (info.pause) {
-                    Debug.chat("重新加载上一个Travel task中...");
+                    Debug.chat("Reloading the previous travel task...");
                     info.onStart(this, mc.player.getPos());
                     travelDelegate.onStop();
                     travelDelegate.onStart(info);
-                    Debug.chat("上一个travel task重新加载完成,使用travel cancel取消");
+                    Debug.chat("Previous travel task reloaded, use travel cancel to cancel it");
                 }
                 if (info.shouldNotRun()) return;
                 if (travelDelegate.onTick(event)) {
@@ -306,7 +306,7 @@ public class TravellingControl extends BaseModule implements LegalMovementManage
     public void onTravel(PlayerEntity var1, Vec3d parsedCoord) {
         checkSelf();
         if (travelTask != null) {
-            Debug.chat("上一个travel task仍旧在执行,自动取消中");
+            Debug.chat("The previous travel task is still running, cancelling automatically");
             onTravelCancel();
         }
         if (parsedCoord == null) return;
@@ -321,10 +321,10 @@ public class TravellingControl extends BaseModule implements LegalMovementManage
         if (checkNull()) return;
         checkSelf();
         if (travelTask == null) {
-            Debug.chat("启动Auto飞行模式");
+            Debug.chat("Starting Auto flight mode");
             travelMode(Optional.empty());
         } else {
-            Debug.chat("上一个travel task仍旧在执行,自动取消中...");
+            Debug.chat("The previous travel task is still running, cancelling automatically...");
             onTravelCancel();
         }
     }
@@ -334,13 +334,13 @@ public class TravellingControl extends BaseModule implements LegalMovementManage
         if (travelTask == null) {
             travelMode(Optional.empty());
         } else {
-            Debug.chat("上一个travel task仍旧在执行,自动取消中...");
+            Debug.chat("The previous travel task is still running, cancelling automatically...");
         }
     }
 
     public void travelMode(Optional<Vec3d> traget) {
         Type type = controlType.get();
-        Debug.chat("当前运动类型: " + type.getDisplay().getString());
+        Debug.chat("Current movement type: " + type.getDisplay().getString());
         TravelInfo info = new TravelInfo();
         info.pos0 = traget;
 
@@ -365,18 +365,18 @@ public class TravellingControl extends BaseModule implements LegalMovementManage
 
     private void outputTravelStats(TravelInfo ti) {
         if (ti == null || ti.startingTime == 0) return;
-        Debug.chat("当前travel task已完成或者终止");
+        Debug.chat("The current travel task is complete or terminated");
         long usedSec = (System.currentTimeMillis() - ti.startingTime) / 1000L;
         Debug.info("using time", usedSec);
         if (mc.player != null) {
             double len = mc.player.getPos().distanceTo(ti.startPos);
             double avgSpeed = usedSec > 0 ? len / usedSec : 0;
             Debug.chat(
-                    "时间开销:",
+                    "Time cost:",
                     usedSec,
-                    "s, 运行距离: ",
+                    "s, distance traveled: ",
                     String.format("%.2f", len),
-                    ", 平均速度: ",
+                    ", average speed: ",
                     String.format("%.2f", avgSpeed),
                     "m/s");
             mc.player.setOnGround(false);
@@ -721,13 +721,13 @@ public class TravellingControl extends BaseModule implements LegalMovementManage
                 if (mc.player.isFallFlying()) {
                     if (ti.state == TravelState.TOO_HIGH) {
                         startWork = true;
-                        Debug.chat("[Pitch440] 开始工作!");
+                        Debug.chat("[Pitch440] Starting work!");
                     } else {
                         if (control.pitch40SafeHeightAutoPullup.get()) {
                             handlePullUp();
                         }
                         if (++counter % 60 == 0) {
-                            Debug.chat("[Pitch40] 请拉升到MaxHeight以启动:", control.maxHeight.get());
+                            Debug.chat("[Pitch40] Please climb to MaxHeight to start:", control.maxHeight.get());
                         }
                     }
                 } else {
@@ -788,7 +788,7 @@ public class TravellingControl extends BaseModule implements LegalMovementManage
 
             if (control.pitch40SafeHeight.get() && mc.player.getY() < control.minHeight.get() - 32) {
                 // emergency
-                Debug.chat("[Pitch40] 滑翔失控了");
+                Debug.chat("[Pitch40] Gliding went out of control");
                 if (control.pitch40SafeHeight.get()) {
                     Debug.info("Pitch40 out of control!");
                     MainTasks.scheduleDisconnect();
@@ -812,8 +812,8 @@ public class TravellingControl extends BaseModule implements LegalMovementManage
         protected void handleFinishCheck() {
             if (control.checkFinish(ti)) {
                 if (!ti.stopManually && control.pitch40SafeEnd.get()) {
-                    Debug.chat("[Pitch40] 我们到达了目的地了");
-                    Debug.chat("[Pitch40] 我们需要自动断线");
+                    Debug.chat("[Pitch40] We have reached the destination");
+                    Debug.chat("[Pitch40] We need to disconnect automatically");
                     MainTasks.scheduleDisconnect();
                 }
                 control.onStop(ti);

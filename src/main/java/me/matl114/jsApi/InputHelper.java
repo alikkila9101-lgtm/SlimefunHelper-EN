@@ -33,7 +33,7 @@ public class InputHelper {
      *                  {@code org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE}等。这些常量定义了键盘上每个按键的唯一标识。
      * @param scancode  按键的物理扫描码。这是由键盘硬件生成的原始值，表示按键在键盘上的物理位置。
      *                  与操作系统和键盘布局无关，同一物理按键在不同键盘布局下具有相同的扫描码。
-     *                  例如，QWERTY键盘的"A"键和AZERTY键盘的"Q"键（物理位置相同）具有相同的扫描码。
+     *                  例如，QWERTY键盘的"A" key and the AZERTY keyboard's "Q"键（物理位置相同）具有相同的扫描码。
      * @param action    按键动作类型。指示按键是被按下、释放还是重复触发。
      *                  可能的取值：
      *                  - {@code org.lwjgl.glfw.GLFW.GLFW_PRESS}   (1): 按键被按下

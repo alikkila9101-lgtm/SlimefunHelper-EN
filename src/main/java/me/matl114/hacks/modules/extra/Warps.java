@@ -220,12 +220,12 @@ public class Warps extends BaseModule {
                         String val = type.substring(1);
                         Vec3d lookup = getCurrentWorldWarps().get().get(val);
                         if (lookup != null) {
-                            resolver.errMsg.accept(
-                                    Text.literal("使用传送点 " + type + " ").append(ChatUtils.getDisplayedLocation(lookup)));
+                            resolver.errMsg.accept(Text.literal("Using warp " + type + " ")
+                                    .append(ChatUtils.getDisplayedLocation(lookup)));
                             resolver.resolve = Optional.of(lookup);
                         } else {
                             resolver.errMsg.accept(
-                                    Text.literal("不存在这样的传送点: " + type).formatted(Formatting.RED));
+                                    Text.literal("No such warp: " + type).formatted(Formatting.RED));
                             resolver.resolve = Optional.empty();
                         }
                     }
@@ -267,7 +267,7 @@ public class Warps extends BaseModule {
                     .helper("message.command.warp_command.setwarp.help")
                     .arg(SimpleCommandArgs.argumentBuilder()
                             .name("warpname")
-                            .select("<输入自定义名称>")
+                            .select("<Enter a custom name>")
                             .build())
                     .arg(SimpleCommandArgs.argumentBuilder(MovTasks.TpaAndPosArgumentType::new)
                             .name("warppos")
@@ -300,11 +300,12 @@ public class Warps extends BaseModule {
         Vec3d vec3d = new Vec3d(vector3d.x, vector3d.y, vector3d.z);
 
         if (mc.world != null && registerWarp(getCurrentWorldName().get(), warpName, vec3d)) {
-            context.sendMessage("&a注册传送点 " + warpName + " 成功");
-            context.sendMessage(
-                    Text.literal("位置: ").formatted(Formatting.GREEN).append(ChatUtils.getDisplayedLocation(vec3d)));
+            context.sendMessage("&aRegistered warp " + warpName + " successfully");
+            context.sendMessage(Text.literal("Position: ")
+                    .formatted(Formatting.GREEN)
+                    .append(ChatUtils.getDisplayedLocation(vec3d)));
         } else {
-            context.sendMessage("&c注册传送点失败!");
+            context.sendMessage("&cFailed to register warp!");
         }
 
         return true;
@@ -313,9 +314,9 @@ public class Warps extends BaseModule {
     private boolean onRemove(CommandExecution context, ArgumentInputStream re, ArgumentReader rest) {
         String warpName = re.nextNonnull();
         if (mc.world != null && unregisterWarp(getCurrentWorldName().get(), warpName)) {
-            context.sendMessage("&a移除传送点 " + warpName + " 成功");
+            context.sendMessage("&aRemoved warp " + warpName + " successfully");
         } else {
-            context.sendMessage("&c移除传送点失败");
+            context.sendMessage("&cFailed to remove warp");
         }
         return true;
     }
@@ -323,7 +324,8 @@ public class Warps extends BaseModule {
     private void onList(ArgumentInputStream re) {
         String worldName = re.nextArgOrDefault(getCurrentWorldName()::get);
         Debug.chat(Text.literal("==".repeat(10)).formatted(Formatting.GREEN));
-        Debug.chat(Text.literal("== 当前世界" + worldName + "传送点列表 ==").formatted(Formatting.GREEN));
+        Debug.chat(
+                Text.literal("== Current world " + worldName + " warp list ==").formatted(Formatting.GREEN));
         var s = getWorldWarps(worldName);
         int i = 0;
         for (var entry : s.entrySet()) {
@@ -341,7 +343,8 @@ public class Warps extends BaseModule {
     private void onListAll(ArgumentInputStream re) {
         String serverName = re.nextArgOrDefault(CommonUtils::getServerName);
         Debug.chat(Text.literal("==".repeat(10)).formatted(Formatting.GREEN));
-        Debug.chat(Text.literal("== 当前服务器" + serverName + "传送点列表 ==").formatted(Formatting.GREEN));
+        Debug.chat(Text.literal("== Current server " + serverName + " warp list ==")
+                .formatted(Formatting.GREEN));
         var s = getServerWarps(serverName);
         int i = 0;
         for (var entry : s.entrySet()) {

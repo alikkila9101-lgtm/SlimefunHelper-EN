@@ -86,15 +86,15 @@ public class MainTasks {
     public static void generateWritableBookContent(String[] args) {
         if (mc.player != null) {
             if (mc.player.getMainHandStack().getItem() == Items.WRITABLE_BOOK) {
-                Debug.chat("生成了书内容");
-                String generatedContent = "§b§k" + ("1a锕β".repeat(250));
+                Debug.chat("Generated book content");
+                String generatedContent = "§b§k" + ("1aAcβ".repeat(250));
                 mc.getNetworkHandler()
                         .sendPacket(new BookUpdateC2SPacket(
                                 InventoryUtils.getSelectedSlot(),
                                 Collections.nCopies(100, generatedContent),
                                 args.length > 0 ? Optional.of(String.join("\n", args)) : Optional.empty()));
             } else {
-                Debug.chat("手持物品不是书");
+                Debug.chat("The held item is not a book");
             }
         }
     }
@@ -176,15 +176,18 @@ public class MainTasks {
         }
 
         if (missingKeys.isEmpty()) {
-            Debug.chat(Text.literal("翻译检查完成，WrapperConfig=" + wrapperConfigCount + "，快捷键入口=" + moduleEntryCount
-                            + "，ConfigEnum=" + configEnumCount + "，ClickGui模块名=" + clickGuiModuleNameCount
-                            + "，config.index=" + configIndexCount + "，未发现缺失翻译")
+            Debug.chat(Text.literal("Translation check complete, WrapperConfig=" + wrapperConfigCount
+                            + ", keybind entry=" + moduleEntryCount
+                            + "，ConfigEnum=" + configEnumCount + ", ClickGui module name=" + clickGuiModuleNameCount
+                            + "，config.index=" + configIndexCount + ", no missing translations found")
                     .formatted(Formatting.GREEN));
             return;
         }
-        Debug.chat(Text.literal("翻译检查完成，WrapperConfig=" + wrapperConfigCount + "，快捷键入口=" + moduleEntryCount
-                        + "，ConfigEnum=" + configEnumCount + "，ClickGui模块名=" + clickGuiModuleNameCount
-                        + "，config.index=" + configIndexCount + "，共发现缺失翻译 " + missingKeys.size() + " 个")
+        Debug.chat(Text.literal("Translation check complete, WrapperConfig=" + wrapperConfigCount + ", keybind entry="
+                        + moduleEntryCount
+                        + "，ConfigEnum=" + configEnumCount + ", ClickGui module name=" + clickGuiModuleNameCount
+                        + "，config.index=" + configIndexCount + ", found " + missingKeys.size()
+                        + " missing translations")
                 .formatted(Formatting.YELLOW));
         for (String key : missingKeys) {
             Debug.chat(Text.literal(" - " + key).formatted(Formatting.RED));

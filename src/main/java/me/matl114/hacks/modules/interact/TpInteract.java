@@ -88,7 +88,7 @@ public class TpInteract extends BaseModule {
                         if (tpToBlock(
                                 blockPos,
                                 (sel) -> executeTp(sel, () -> {
-                                    Debug.chat("[TpInteract] 尝试和物品栏交互");
+                                    Debug.chat("[TpInteract] Attempting to interact with the inventory");
                                     Listener.sendPacketNoEvents(packetToSend);
                                     InvTasks.executePredictInventoryAction(
                                             InventoryUtils.createInventory(Collections.nCopies(size, ItemStack.EMPTY)),

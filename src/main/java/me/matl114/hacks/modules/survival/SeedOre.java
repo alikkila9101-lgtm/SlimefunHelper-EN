@@ -163,7 +163,7 @@ public class SeedOre extends BaseModule {
         super.onDisableModule();
         oreConfig = null;
         if (mc.player != null && mc.world != null) {
-            Debug.chat(Text.literal("[种子矿透] 禁用该功能").formatted(Formatting.RED));
+            Debug.chat(Text.literal("[SeedOre] Disable this feature").formatted(Formatting.RED));
         }
         onRemoveFakeOreVisibleChunks();
     }
@@ -177,7 +177,7 @@ public class SeedOre extends BaseModule {
             }
             oreConfig = Ore.getRegistry();
             if (mc.player != null && mc.world != null) {
-                Debug.chat(Text.literal("[种子矿透] 启用该功能, 范围 %d".formatted(chunkRadius.get()))
+                Debug.chat(Text.literal("[SeedOre] Enable this feature, range %d".formatted(chunkRadius.get()))
                         .formatted(Formatting.GREEN));
                 onLoadCurrentVisibleChunks();
             }
@@ -185,7 +185,8 @@ public class SeedOre extends BaseModule {
 
         } catch (Throwable e) {
             Debug.info(e);
-            if (mc.player != null) Debug.chat(Text.literal("[种子矿透] 启用时出现报错, 已关闭..."));
+            if (mc.player != null)
+                Debug.chat(Text.literal("[SeedOre] An error occurred while enabling, it has been turned off..."));
             enable.set(false);
         }
     }
@@ -244,7 +245,7 @@ public class SeedOre extends BaseModule {
     public void onSeedChange(String key) {
         if (!checkCurrentSeedExistence()) return;
         if (Objects.equals(CommonUtils.getWorldName(), key) && enable.get()) {
-            Debug.chat("[种子矿透] 重载Seed Ore Simulation功能");
+            Debug.chat("[SeedOre] Reload the Seed Ore Simulation feature");
             onReloadSeedOre();
         }
     }
@@ -271,7 +272,7 @@ public class SeedOre extends BaseModule {
         if (hasCurrentSeed()) {
             return true;
         } else {
-            Debug.chat(Text.literal("[世界种子] 暂时没有设置 %s 世界的种子".formatted(CommonUtils.getWorldName()))
+            Debug.chat(Text.literal("[WorldSeed] No seed set for world %s yet".formatted(CommonUtils.getWorldName()))
                     .formatted(Formatting.RED));
             enable.set(false);
             return false;
@@ -286,15 +287,16 @@ public class SeedOre extends BaseModule {
     public void validateCurrentSeed() {
         if (!checkCurrentSeedExistence()) return;
         long value = seedMap.getLong(CommonUtils.getWorldName());
-        Debug.chat(Text.literal("[世界种子] 核验当前世界种子中:").formatted(Formatting.GREEN));
-        Debug.chat(
-                Text.literal("[世界种子] 输入的种子: ").formatted(Formatting.GREEN).append(ChatUtils.getDisplayedLong(value)));
+        Debug.chat(Text.literal("[WorldSeed] Verifying the current world seed:").formatted(Formatting.GREEN));
+        Debug.chat(Text.literal("[WorldSeed] Entered seed: ")
+                .formatted(Formatting.GREEN)
+                .append(ChatUtils.getDisplayedLong(value)));
         long hashed = mc.world.getBiomeAccess().seed;
-        Debug.chat(Text.literal("[世界种子] 服务器加密种子: ").append(ChatUtils.getDisplayedLong(hashed)));
+        Debug.chat(Text.literal("[WorldSeed] Server encrypted seed: ").append(ChatUtils.getDisplayedLong(hashed)));
         if (isSeedValid(value)) {
-            Debug.chat(Text.literal("[世界种子] 验证通过").formatted(Formatting.GREEN));
+            Debug.chat(Text.literal("[WorldSeed] Verification passed").formatted(Formatting.GREEN));
         } else {
-            Debug.chat(Text.literal("[世界种子] 验证失败").formatted(Formatting.RED));
+            Debug.chat(Text.literal("[WorldSeed] Verification failed").formatted(Formatting.RED));
         }
     }
 
@@ -677,7 +679,7 @@ public class SeedOre extends BaseModule {
             val = Long.parseLong(na);
         }
         setWorldSeed(val);
-        me.matl114.utils.Debug.chat("[世界种子] 设置", CommonUtils.getWorldName(), "的种子为", val);
+        me.matl114.utils.Debug.chat("[WorldSeed] Set ", CommonUtils.getWorldName(), "'s seed to ", val);
     }
 
     public void onSeedRemove(ArgumentInputStream re) {
@@ -686,7 +688,7 @@ public class SeedOre extends BaseModule {
     }
 
     public void onSeedList() {
-        Debug.chat("[世界种子] 列表");
+        Debug.chat("[WorldSeed] List");
         for (var entry : seedMap.object2LongEntrySet()) {
             Debug.chat(entry.getKey(), ":", ChatUtils.getDisplayedLong(entry.getLongValue()));
         }
@@ -695,22 +697,22 @@ public class SeedOre extends BaseModule {
     public void onOreRender(ArgumentInputStream re) {
         boolean val = re.nextBoolean();
         enableRender.set(val);
-        Debug.chat("[种子矿透] 切换渲染:", val);
+        Debug.chat("[SeedOre] Toggle rendering:", val);
     }
 
     public void onFakeOre(ArgumentInputStream re) {
         String val = re.nextNonnull();
         switch (val) {
             case "on" -> {
-                Debug.chat("[种子矿透] 切换假矿: true");
+                Debug.chat("[SeedOre] Toggle fake ores: true");
                 enableFakeOres.set(true);
             }
             case "off" -> {
-                Debug.chat("[种子矿透] 切换假矿: false");
+                Debug.chat("[SeedOre] Toggle fake ores: false");
                 enableFakeOres.set(false);
             }
             case "reload" -> {
-                Debug.chat("[种子矿透] 重载可视距离内的假矿");
+                Debug.chat("[SeedOre] Reload fake ores within render distance");
                 onReloadFakeOre();
             }
         }
